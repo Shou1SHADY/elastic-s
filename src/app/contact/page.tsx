@@ -8,11 +8,19 @@ import { useLanguage } from "@/lib/i18n";
 import { Mail, Phone, MapPin, Send, Clock, Hexagon, ShieldCheck, Zap, Users, CheckCircle2, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export default function ContactPage() {
   const { t, isRtl } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    industry: t("armyTactical"),
+    message: ""
+  });
 
     const contactInfo = [
     {
@@ -43,13 +51,30 @@ export default function ContactPage() {
     { icon: ShieldCheck, title: "ISO 9001 Certified", desc: "Highest quality manufacturing standards since 1994." }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    
+    try {
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert([formData]);
+
+      if (error) throw error;
+
+      toast.success(t("sendMessageSuccess") || "Message sent successfully!");
       setSubmitted(true);
-    }, 1500);
+    } catch (error: any) {
+      console.error("Submission error:", error);
+      toast.error(error.message || "Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -175,6 +200,9 @@ export default function ContactPage() {
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">{t("fullName")}</label>
                             <input 
                               required
+                              name="full_name"
+                              value={formData.full_name}
+                              onChange={handleChange}
                               type="text" 
                               placeholder="John Doe"
                               className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 placeholder:text-stone-300 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg"
@@ -184,6 +212,9 @@ export default function ContactPage() {
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">{t("emailAddress")}</label>
                             <input 
                               required
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
                               type="email" 
                               placeholder="john@company.com"
                               className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 placeholder:text-stone-300 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg"
@@ -193,7 +224,12 @@ export default function ContactPage() {
                         
                         <div className="space-y-3">
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Industry / Project Type</label>
-                          <select className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg appearance-none">
+                          <select 
+                            name="industry"
+                            value={formData.industry}
+                            onChange={handleChange}
+                            className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg appearance-none"
+                          >
                             <option>{t("armyTactical")}</option>
                             <option>{t("industrialParts")}</option>
                             <option>{t("brandMerch")}</option>
@@ -205,6 +241,9 @@ export default function ContactPage() {
                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">{t("message")}</label>
                           <textarea 
                             required
+                            name="message"
+                            value={formData.message}
+                            onChange={handleChange}
                             rows={5}
                             placeholder="Tell us about your technical requirements..."
                             className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 placeholder:text-stone-300 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg resize-none"
@@ -253,79 +292,6 @@ export default function ContactPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Global Distribution & Map */}
-        <section className="relative h-[500px] md:h-[700px] bg-stone-200 overflow-hidden flex items-center justify-center">
-          <Image 
-            src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80" 
-            alt="Map Background"
-            fill
-            className="object-cover grayscale"
-          />
-          <div className="absolute inset-0 bg-slate-900/40" />
-          
-          <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10 w-full">
-            <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-12 items-center", isRtl && "md:grid-cols-reverse")}>
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className={cn("bg-white/10 backdrop-blur-xl border border-white/20 p-8 md:p-12 rounded-[2rem] text-white max-w-xl", isRtl && "mr-auto")}
-              >
-                <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-orange-600/20">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                  <h3 className="text-3xl font-black mb-6 italic uppercase tracking-tighter">{t("location")}</h3>
-                  <p className="text-lg text-slate-200 leading-relaxed mb-8">
-                    Obour City, Cairo, Egypt
-                  </p>
-                  <div className="flex gap-4">
-                    <a 
-                      href="https://maps.app.goo.gl/D83f5i4as62NNb4V7?g_st=aw" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-orange-500 hover:text-white transition-all inline-block"
-                    >
-                      Get Directions
-                    </a>
-                  </div>
-              </motion.div>
-
-              <div className={cn("flex flex-col gap-6", isRtl && "items-end")}>
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  className="bg-white p-6 rounded-2xl shadow-2xl flex items-center gap-6 max-w-md w-full"
-                >
-                  <div className="bg-orange-100 p-4 rounded-xl text-orange-600">
-                    <Zap className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-slate-900 uppercase tracking-tighter italic">{t("globalDistribution")}</h4>
-                    <p className="text-sm text-slate-500">{t("globalDistributionDesc")}</p>
-                  </div>
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  viewport={{ once: true }}
-                  className="bg-slate-900 p-6 rounded-2xl shadow-2xl flex items-center gap-6 max-w-md w-full text-white"
-                >
-                  <div className="bg-blue-600 p-4 rounded-xl text-white">
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-black uppercase tracking-tighter italic">Secure Shipping</h4>
-                    <p className="text-sm text-slate-400">Insured global freight via DHL & FedEx.</p>
-                  </div>
                 </motion.div>
               </div>
             </div>
