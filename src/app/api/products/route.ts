@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const BUCKET_NAME = "corporate";
-const PUBLIC_URL = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}`;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 const CATEGORIES = [
   "army",
@@ -41,53 +40,69 @@ interface Product {
   image: string;
 }
 
-function formatProductName(filename: string, category: Category): string {
-  const name = filename
-    .replace(/\.[^/.]+$/, "") // Remove extension
-    .split(/[-_]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-  
-  return name.length > 2 ? name : `${CATEGORY_LABELS[category]} Product`;
+// Probabilistic fallback: check if these files exist if listing fails
+const FALLBACK_FILENAMES = ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "8.jpeg"];
+
+async function checkFileExists(url: string) {
+  try {
+    const res = await fetch(url, { method: "HEAD" });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
 
 export async function GET() {
   try {
     const allProducts: Product[] = [];
 
-    // Fetch files from Supabase Storage for each category
-    const results = await Promise.all(
-      CATEGORIES.map(async (category) => {
-        const { data, error } = await supabase.storage
-          .from(BUCKET_NAME)
-          .list(category, {
-            limit: 100,
-            offset: 0,
-            sortBy: { column: 'name', order: 'asc' },
-          });
+    // Fetch images for each category concurrently
+    const categoryPromises = CATEGORIES.map(async (category) => {
+      const { data, error } = await supabase.storage.from(BUCKET_NAME).list(category);
 
-        console.log(`List result for ${category}:`, { count: data?.length, error: error?.message });
+      if (error) {
+        console.error(`Error listing folder ${category}:`, error);
+        return [];
+      }
 
-        if (error) {
-          console.error(`Error listing files for category ${category}:`, JSON.stringify(error, null, 2));
-          return [];
-        }
+      if (!data || data.length === 0) {
+        console.warn(`Folder ${category} is empty or listing is blocked by RLS. Trying fallback check...`);
+        
+        // Fallback: Check if common files exist via HEAD request
+        const fallbackChecks = FALLBACK_FILENAMES.map(async (filename, index) => {
+          const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${category}/${filename}`;
+          const exists = await checkFileExists(url);
+          if (exists) {
+            return {
+              id: `${category}-fallback-${index}`,
+              name: `${CATEGORY_LABELS[category]} #${index + 1}`,
+              category,
+              categoryLabel: CATEGORY_LABELS[category],
+              image: url,
+            };
+          }
+          return null;
+        });
 
-        // Filter out folders (if any) and non-image files
-        return (data || [])
-          .filter(file => file.name !== '.emptyFolderPlaceholder' && /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name))
-          .map(file => ({
-            id: `${category}-${file.id || file.name}`,
-            name: formatProductName(file.name, category),
-            category,
-            categoryLabel: CATEGORY_LABELS[category],
-            image: `${PUBLIC_URL}/${category}/${file.name}`,
-          }));
-      })
-    );
+        const fallbackResults = await Promise.all(fallbackChecks);
+        return fallbackResults.filter((p): p is Product => p !== null);
+      }
 
-    results.forEach(products => {
-      allProducts.push(...products);
+      // Filter out non-image files or folders (if any)
+      return (data || [])
+        .filter((file) => file.name !== ".emptyFolderPlaceholder" && !file.metadata?.mimetype?.startsWith("directory"))
+        .map((file, index) => ({
+          id: `${category}-${index}-${file.id || file.name}`,
+          name: `${CATEGORY_LABELS[category]} #${index + 1}`,
+          category,
+          categoryLabel: CATEGORY_LABELS[category],
+          image: `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${category}/${file.name}`,
+        }));
+    });
+
+    const results = await Promise.all(categoryPromises);
+    results.forEach((categoryProducts) => {
+      allProducts.push(...categoryProducts);
     });
 
     return NextResponse.json({
