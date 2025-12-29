@@ -60,20 +60,20 @@ export default function AboutPage() {
                 <p className={cn("text-lg text-slate-600 leading-relaxed mb-6", isRtl && "text-right")}>
                   {t("ourStoryDesc")}
                 </p>
-                  <div className={cn("grid grid-cols-2 sm:grid-cols-3 gap-6 pt-8 border-t border-stone-100", isRtl && "text-right")}>
-                    <div>
-                      <div className="text-2xl md:text-3xl font-bold text-slate-900">30+</div>
-                      <div className="text-[10px] md:text-sm text-slate-500 uppercase tracking-wider">Years Exp.</div>
+                    <div className={cn("grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 pt-8 border-t border-stone-100", isRtl && "text-right")}>
+                      <div>
+                        <div className="text-xl md:text-3xl font-bold text-slate-900">30+</div>
+                        <div className="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider">Years Exp.</div>
+                      </div>
+                      <div>
+                        <div className="text-xl md:text-3xl font-bold text-slate-900">500+</div>
+                        <div className="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider">Molds/Year</div>
+                      </div>
+                      <div className="col-span-2 sm:col-span-1">
+                        <div className="text-xl md:text-3xl font-bold text-slate-900">45</div>
+                        <div className="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider">Countries</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-2xl md:text-3xl font-bold text-slate-900">500+</div>
-                      <div className="text-[10px] md:text-sm text-slate-500 uppercase tracking-wider">Molds/Year</div>
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <div className="text-2xl md:text-3xl font-bold text-slate-900">45</div>
-                      <div className="text-[10px] md:text-sm text-slate-500 uppercase tracking-wider">Countries</div>
-                    </div>
-                  </div>
               </motion.div>
 
               <motion.div

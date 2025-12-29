@@ -127,14 +127,14 @@ export const Navbar: FC = () => {
               <Loader />
             </div>
           </div>
-          <Link
-            href="/"
-            className={cn("flex-shrink-0", isRtl ? "ml-6" : "mr-6")}
-          >
-            <div ref={logoRef}>
-              <Logo />
-            </div>
-          </Link>
+            <Link
+              href="/"
+              className={cn("flex-shrink-0 transition-all", isRtl ? "ml-4 sm:ml-6" : "mr-4 sm:mr-6")}
+            >
+              <div ref={logoRef} className="scale-90 sm:scale-100">
+                <Logo />
+              </div>
+            </Link>
           <nav
             ref={navRef}
             className={cn(
@@ -215,10 +215,10 @@ export const Navbar: FC = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-3xl font-bold text-slate-900 hover:text-orange-600 transition-colors italic uppercase tracking-tighter"
-                >
-                  {t(link.labelKey)}
-                </Link>
+                    className="text-2xl sm:text-3xl font-bold text-slate-900 hover:text-orange-600 transition-colors italic uppercase tracking-tighter"
+                  >
+                    {t(link.labelKey)}
+                  </Link>
               ))}
             </nav>
           <div className="mt-8 flex gap-4">

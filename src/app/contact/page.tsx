@@ -164,20 +164,20 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Map Placeholder */}
-        <section className="h-[400px] grayscale hover:grayscale-0 transition-all duration-700 bg-stone-200 overflow-hidden relative">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <MapPin className="w-12 h-12 text-orange-600 mx-auto mb-4" />
-              <p className="font-bold text-slate-900">{t("visitUs")}</p>
+          {/* Map Placeholder */}
+          <section className="h-[300px] sm:h-[400px] grayscale hover:grayscale-0 transition-all duration-700 bg-stone-200 overflow-hidden relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center p-4">
+                <MapPin className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600 mx-auto mb-4" />
+                <p className="font-bold text-slate-900 text-sm sm:text-base">{t("visitUs")}</p>
+              </div>
             </div>
-          </div>
-          <img 
-            src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80" 
-            alt="Map Background"
-            className="w-full h-full object-cover opacity-50"
-          />
-        </section>
+            <img 
+              src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80" 
+              alt="Map Background"
+              className="w-full h-full object-cover opacity-50"
+            />
+          </section>
       </main>
 
       <Footer />

@@ -121,14 +121,14 @@ export function HeroCarousel() {
               >
                 {slides[current].tag}
               </motion.span>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-3 md:mb-4 leading-[1.1] italic uppercase"
-              >
-                {slides[current].title}
-              </motion.h1>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-3 md:mb-4 leading-[1.1] italic uppercase"
+                >
+                  {slides[current].title}
+                </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
