@@ -1,41 +1,56 @@
+"use client";
+
 import { Layers, Palette, ShieldCheck } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 export function Features() {
+  const { t, isRtl } = useLanguage();
+
   return (
     <section className="bg-white py-24 border-t border-stone-100">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div className="group">
-            <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <div className={cn("group", isRtl && "text-right")}>
+            <div className={cn(
+              "w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform",
+              isRtl ? "mr-0 ml-auto md:ml-0" : "mr-auto ml-0"
+            )}>
               <Layers className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-semibold text-slate-900 mb-3 tracking-tight">
-              Custom Molds
+              {t("customMolds")}
             </h3>
             <p className="text-slate-500 leading-relaxed text-lg">
-              We create proprietary aluminum and copper molds tailored to your exact 3D specifications and tolerances.
+              {t("customMoldsDesc")}
             </p>
           </div>
-          <div className="group">
-            <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <div className={cn("group", isRtl && "text-right")}>
+            <div className={cn(
+              "w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform",
+              isRtl ? "mr-0 ml-auto md:ml-0" : "mr-auto ml-0"
+            )}>
               <Palette className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-semibold text-slate-900 mb-3 tracking-tight">
-              Pantone Matching
+              {t("pantoneMatching")}
             </h3>
             <p className="text-slate-500 leading-relaxed text-lg">
-              Exact color reproduction. Our PVC and silicone mixing process ensures brand consistency across every batch.
+              {t("pantoneMatchingDesc")}
             </p>
           </div>
-          <div className="group">
-            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <div className={cn("group", isRtl && "text-right")}>
+            <div className={cn(
+              "w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform",
+              isRtl ? "mr-0 ml-auto md:ml-0" : "mr-auto ml-0"
+            )}>
               <ShieldCheck className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-semibold text-slate-900 mb-3 tracking-tight">
-              High Durability
+              {t("highDurability")}
             </h3>
             <p className="text-slate-500 leading-relaxed text-lg">
-              Waterproof, heat-resistant, and flexible. Products built to withstand industrial use and outdoor elements.
+              {t("highDurabilityDesc")}
             </p>
           </div>
         </div>

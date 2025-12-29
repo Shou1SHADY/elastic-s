@@ -4,36 +4,39 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-
-const slides = [
-  {
-    tag: "Tactical Collection",
-    title: "Precision Molding for Mission Critical Gear.",
-    description: "Custom rubber patches, grips, and tactical accessories designed for durability in extreme conditions.",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    tag: "Brand Merchandise",
-    title: "Vibrant 3D PVC Promotional Products.",
-    description: "From themed keychains to custom coasters. High-detail molds that bring your brand mascot to life.",
-    image: "https://images.unsplash.com/photo-1616606103915-dea7be788566?q=80&w=2671&auto=format&fit=crop",
-  },
-  {
-    tag: "Industrial Components",
-    title: "Automotive & Electronic Insulation.",
-    description: "High-grade silicone and rubber components. Mobile holders, cable organizers, and protective seals.",
-    image: "https://images.unsplash.com/photo-1622675363311-3e1904c77265?q=80&w=2532&auto=format&fit=crop",
-  },
-];
+import { useLanguage } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 const SLIDE_DURATION = 5000;
 
 export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
+  const { t, isRtl } = useLanguage();
+
+  const slides = [
+    {
+      tag: t("tacticalCollection"),
+      title: t("tacticalTitle"),
+      description: t("tacticalDesc"),
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2670&auto=format&fit=crop",
+    },
+    {
+      tag: t("brandMerch"),
+      title: t("brandTitle"),
+      description: t("brandDesc"),
+      image: "https://images.unsplash.com/photo-1616606103915-dea7be788566?q=80&w=2671&auto=format&fit=crop",
+    },
+    {
+      tag: t("industrialParts"),
+      title: t("industrialTitle"),
+      description: t("industrialDesc"),
+      image: "https://images.unsplash.com/photo-1622675363311-3e1904c77265?q=80&w=2532&auto=format&fit=crop",
+    },
+  ];
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   useEffect(() => {
     const timer = setInterval(nextSlide, SLIDE_DURATION);
@@ -62,7 +65,10 @@ export function HeroCarousel() {
             <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
           </div>
 
-          <div className="absolute bottom-0 left-0 w-full p-8 md:p-16 text-white max-w-4xl z-10">
+          <div className={cn(
+            "absolute bottom-0 w-full p-8 md:p-16 text-white max-w-4xl z-10",
+            isRtl ? "right-0 text-right" : "left-0 text-left"
+          )}>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -75,14 +81,9 @@ export function HeroCarousel() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-5xl md:text-7xl font-semibold tracking-tight mb-4 leading-tight"
+              className="text-4xl md:text-7xl font-semibold tracking-tight mb-4 leading-tight"
             >
-              {slides[current].title.split("<br>").map((line, i) => (
-                <span key={i}>
-                  {line}
-                  {i < slides[current].title.split("<br>").length - 1 && <br />}
-                </span>
-              ))}
+              {slides[current].title}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -98,22 +99,28 @@ export function HeroCarousel() {
               transition={{ delay: 0.6 }}
               className="bg-white text-slate-900 px-6 py-3 rounded-full font-medium hover:bg-orange-500 hover:text-white transition-colors flex items-center gap-2"
             >
-              View Collection <ArrowRight className="w-4 h-4" />
+              {t("viewCollection")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
             </motion.button>
           </div>
         </motion.div>
       </AnimatePresence>
 
       {/* Carousel Indicators */}
-      <div className="absolute right-8 bottom-8 flex gap-2 z-20">
+      <div className={cn(
+        "absolute bottom-8 flex gap-2 z-20",
+        isRtl ? "left-8" : "right-8"
+      )}>
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className="indicator w-12 h-1 bg-white/40 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/80"
+            className="indicator w-8 md:w-12 h-1 bg-white/40 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/80"
           >
             <div
-              className="h-full bg-white w-full origin-left transform scale-x-0 transition-transform ease-linear"
+              className={cn(
+                "h-full bg-white w-full transition-transform ease-linear",
+                isRtl ? "origin-right" : "origin-left"
+              )}
               style={{
                 transform: current === index ? "scaleX(1)" : "scaleX(0)",
                 transitionDuration: current === index ? `${SLIDE_DURATION}ms` : "0ms",

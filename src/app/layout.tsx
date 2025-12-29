@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { VisualEditsMessenger } from "orchids-visual-edits";
+import { LanguageProvider } from "@/lib/i18n";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,9 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} font-sans antialiased bg-stone-50 text-slate-800 selection:bg-orange-200 selection:text-orange-900`}
+        className={`${inter.variable} font-sans antialiased bg-stone-50 text-slate-800 selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden w-full`}
       >
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
         <VisualEditsMessenger />
       </body>
     </html>
