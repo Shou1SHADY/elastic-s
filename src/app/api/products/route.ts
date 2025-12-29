@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-const SUPABASE_URL = "https://logewufqgmgxufkovpuw.supabase.co";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const BUCKET_NAME = "corporate";
 const PUBLIC_URL = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}`;
 
@@ -40,40 +41,54 @@ interface Product {
   image: string;
 }
 
-const CATEGORY_FILES: Record<Category, string[]> = {
-  army: ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "8.jpeg"],
-  police: ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg"],
-  "bar-mat": ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg"],
-  coasters: ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg"],
-  "flash-memory": ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg"],
-  "fridge-magnet": ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg"],
-  label: ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg"],
-  lighter: ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg"],
-  "mobile-holder": ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg"],
-  "pen-accessories": ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg"],
-};
-
 function formatProductName(filename: string, category: Category): string {
-  const index = filename.replace(/\.(jpg|jpeg|png|gif|webp)$/i, "");
-  return `${CATEGORY_LABELS[category]} #${index}`;
+  const name = filename
+    .replace(/\.[^/.]+$/, "") // Remove extension
+    .split(/[-_]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+  
+  return name.length > 2 ? name : `${CATEGORY_LABELS[category]} Product`;
 }
 
 export async function GET() {
   try {
     const allProducts: Product[] = [];
 
-    for (const category of CATEGORIES) {
-      const files = CATEGORY_FILES[category];
-      files.forEach((filename, index) => {
-        allProducts.push({
-          id: `${category}-${index}-${filename}`,
-          name: formatProductName(filename, category),
-          category,
-          categoryLabel: CATEGORY_LABELS[category],
-          image: `${PUBLIC_URL}/${category}/${filename}`,
-        });
-      });
-    }
+    // Fetch files from Supabase Storage for each category
+    const results = await Promise.all(
+      CATEGORIES.map(async (category) => {
+        const { data, error } = await supabase.storage
+          .from(BUCKET_NAME)
+          .list(category, {
+            limit: 100,
+            offset: 0,
+            sortBy: { column: 'name', order: 'asc' },
+          });
+
+        console.log(`List result for ${category}:`, { count: data?.length, error: error?.message });
+
+        if (error) {
+          console.error(`Error listing files for category ${category}:`, JSON.stringify(error, null, 2));
+          return [];
+        }
+
+        // Filter out folders (if any) and non-image files
+        return (data || [])
+          .filter(file => file.name !== '.emptyFolderPlaceholder' && /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name))
+          .map(file => ({
+            id: `${category}-${file.id || file.name}`,
+            name: formatProductName(file.name, category),
+            category,
+            categoryLabel: CATEGORY_LABELS[category],
+            image: `${PUBLIC_URL}/${category}/${file.name}`,
+          }));
+      })
+    );
+
+    results.forEach(products => {
+      allProducts.push(...products);
+    });
 
     return NextResponse.json({
       products: allProducts,
