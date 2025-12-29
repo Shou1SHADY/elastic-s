@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n";
 import { Target, History } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function AboutPage() {
   const { t, isRtl } = useLanguage();

@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n";
 import { Mail, Phone, MapPin, Send, Clock, Hexagon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function ContactPage() {
   const { t, isRtl } = useLanguage();
