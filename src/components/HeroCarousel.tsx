@@ -13,12 +13,12 @@ export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
   const { t, isRtl } = useLanguage();
 
-  const slides = [
+  const slides = useMemo(() => [
     {
       tag: t("tacticalCollection"),
       title: t("tacticalTitle"),
       description: t("tacticalDesc"),
-      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2670&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=2670&auto=format&fit=crop",
     },
     {
       tag: t("brandMerch"),
@@ -30,9 +30,9 @@ export function HeroCarousel() {
       tag: t("industrialParts"),
       title: t("industrialTitle"),
       description: t("industrialDesc"),
-      image: "https://images.unsplash.com/photo-1622675363311-3e1904c77265?q=80&w=2532&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1590523278191-995cbcda646b?q=80&w=2532&auto=format&fit=crop",
     },
-  ];
+  ], [t]);
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);

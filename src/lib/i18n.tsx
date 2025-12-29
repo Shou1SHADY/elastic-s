@@ -105,20 +105,24 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("en");
 
-  const t = (key: string) => {
+  const t = useCallback((key: string) => {
     return translations[language][key] || key;
-  };
+  }, [language]);
 
   const isRtl = language === "ar";
 
   useEffect(() => {
-    document.documentElement.dir = isRtl ? "rtl" : "ltr";
-    document.documentElement.lang = language;
+    if (typeof document !== "undefined") {
+      document.documentElement.dir = isRtl ? "rtl" : "ltr";
+      document.documentElement.lang = language;
+    }
   }, [language, isRtl]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t, isRtl }}>
-      <div dir={isRtl ? "rtl" : "ltr"}>{children}</div>
+      <div dir={isRtl ? "rtl" : "ltr"} className="w-full">
+        {children}
+      </div>
     </LanguageContext.Provider>
   );
 }

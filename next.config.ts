@@ -5,6 +5,9 @@ import path from "node:path";
 const loaderPath = require.resolve('orchids-visual-edits/loader.js');
 
 const nextConfig: NextConfig = {
+  experimental: {
+    allowedDevOrigins: ["192.168.56.1", "localhost:3000"],
+  },
   images: {
     remotePatterns: [
       {
