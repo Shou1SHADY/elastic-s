@@ -8,7 +8,7 @@ export function Features() {
   const { t, isRtl } = useLanguage();
 
   return (
-    <section className="bg-white py-16 md:py-24 border-t border-stone-100">
+    <section className="bg-white py-16 md:py-24 border-t border-stone-100" id="about">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           <div className={cn("group", isRtl && "text-right")}>
