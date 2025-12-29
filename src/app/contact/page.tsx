@@ -58,7 +58,7 @@ export default function ContactPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative pt-28 pb-12 md:pt-40 md:pb-20 bg-slate-900 overflow-hidden">
+        <section className="relative pt-32 pb-12 md:pt-40 md:pb-20 bg-slate-900 overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
