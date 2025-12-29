@@ -62,9 +62,9 @@ export function ProductCatalog() {
   };
 
     return (
-    <main className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 overflow-x-hidden" id="products">
+    <main className="max-w-7xl mx-auto px-2 md:px-6 py-12 md:py-20 overflow-x-hidden" id="products">
       {/* Section Header */}
-      <div className="mb-10 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="mb-10 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 px-2 md:px-0">
         <div className={cn(isRtl && "text-right")}>
           <h2 className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight mb-2 md:mb-4">
             {t("productCatalog")}
@@ -104,61 +104,59 @@ export function ProductCatalog() {
           </div>
         </div>
 
-              {/* Product Grid */}
-              {loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8 w-full">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className="animate-pulse min-w-0">
-                      <div className="bg-stone-100 rounded-lg md:rounded-2xl aspect-[4/5] md:aspect-[4/3] mb-4" />
-                      <div className="h-3 bg-stone-100 rounded w-3/4 mb-2" />
-                      <div className="h-3 bg-stone-100 rounded w-1/2" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <motion.div 
-                  layout
-                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8 w-full"
-                >
-                  <AnimatePresence mode="popLayout">
-                    {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
-                      <motion.div
-                        key={product.id}
-                        layout
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.4 }}
-                        className="group w-full min-w-0"
-                      >
-                        <div className="relative bg-white rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100 w-full">
-                          <Image
-                            src={imageErrors.has(product.id) ? fallbackImage : product.image}
-                            alt={product.name}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-110"
-                            onError={() => handleImageError(product.id)}
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
+                {/* Product Grid */}
+                {loading ? (
+                  <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-1 md:gap-8 w-full">
+                    {[...Array(9)].map((_, i) => (
+                      <div key={i} className="animate-pulse min-w-0">
+                        <div className="bg-stone-100 rounded-md md:rounded-2xl aspect-square md:aspect-[4/3] mb-1" />
+                        <div className="h-2 bg-stone-100 rounded w-3/4 mb-1" />
+                        <div className="h-2 bg-stone-100 rounded w-1/2" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div 
+                    className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-1 md:gap-8 w-full"
+                  >
+                    <AnimatePresence mode="popLayout">
+                      {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                        <motion.div
+                          key={product.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.3 }}
+                          className="group w-full min-w-0"
+                        >
+                          <div className="relative bg-white rounded-md md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-square md:aspect-[4/3] border border-stone-100 w-full">
+                            <Image
+                              src={imageErrors.has(product.id) ? fallbackImage : product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-110"
+                              onError={() => handleImageError(product.id)}
+                              sizes="(max-width: 640px) 30vw, (max-width: 1024px) 30vw, 25vw"
+                            />
                           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className={cn(
-                        "absolute top-1 md:top-4",
-                        isRtl ? "right-1 md:right-4" : "left-1 md:left-4"
+                        "absolute top-0.5 md:top-4",
+                        isRtl ? "right-0.5 md:right-4" : "left-0.5 md:left-4"
                       )}>
-                        <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[8px] md:text-xs font-bold px-1.5 py-0.5 rounded-md shadow-sm border border-stone-100">
+                        <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[6px] md:text-xs font-bold px-1 py-0.5 rounded shadow-sm border border-stone-100">
                           {product.categoryLabel}
                         </span>
                       </div>
                     </div>
-                    <div className={cn("mt-2 md:mt-5 px-1", isRtl && "text-right")}>
-                      <h3 className="text-[10px] md:text-lg font-bold text-slate-900 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2">
+                    <div className={cn("mt-1 md:mt-5 px-0.5", isRtl && "text-right")}>
+                      <h3 className="text-[9px] md:text-lg font-bold text-slate-900 leading-tight group-hover:text-orange-600 transition-colors line-clamp-1">
                         {product.name}
                       </h3>
                     </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </div>
           )}
 
         {/* Pagination */}
