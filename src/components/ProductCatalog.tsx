@@ -84,63 +84,63 @@ export function ProductCatalog() {
           </div>
       </div>
 
-      {/* Sticky Filter Bar */}
-      <div className="sticky top-[72px] sm:top-20 md:top-24 z-30 py-3 md:py-4 bg-white/95 backdrop-blur-md border-b border-stone-100 mb-8 w-full overflow-hidden">
-        <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 md:mx-0 md:px-0">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={cn(
-                "whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all",
-                activeCategory === cat.id
-                  ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105"
-                  : "bg-stone-50 text-slate-600 hover:bg-stone-100 border border-transparent"
-              )}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-            {/* Product Grid */}
-            {loading ? (
-              <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="bg-stone-100 rounded-lg md:rounded-2xl aspect-[4/5] md:aspect-[4/3] mb-4" />
-                    <div className="h-3 bg-stone-100 rounded w-3/4 mb-2" />
-                    <div className="h-3 bg-stone-100 rounded w-1/2" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <motion.div 
-                layout
-                className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8"
+        {/* Sticky Filter Bar */}
+        <div className="sticky top-[72px] sm:top-20 md:top-24 z-30 py-3 md:py-4 bg-white/95 backdrop-blur-md border-b border-stone-100 mb-8 w-full overflow-hidden">
+          <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-1 px-4 md:px-0">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={cn(
+                  "whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all flex-shrink-0",
+                  activeCategory === cat.id
+                    ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105"
+                    : "bg-stone-50 text-slate-600 hover:bg-stone-100 border border-transparent"
+                )}
               >
-                <AnimatePresence mode="popLayout">
-                  {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
-                    <motion.div
-                      key={product.id}
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.4 }}
-                      className="group"
-                    >
-                      <div className="relative bg-white rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
-                        <Image
-                          src={imageErrors.has(product.id) ? fallbackImage : product.image}
-                          alt={product.name}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          onError={() => handleImageError(product.id)}
-                          sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 25vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+              {/* Product Grid */}
+              {loading ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8 w-full">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="animate-pulse min-w-0">
+                      <div className="bg-stone-100 rounded-lg md:rounded-2xl aspect-[4/5] md:aspect-[4/3] mb-4" />
+                      <div className="h-3 bg-stone-100 rounded w-3/4 mb-2" />
+                      <div className="h-3 bg-stone-100 rounded w-1/2" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <motion.div 
+                  layout
+                  className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8 w-full"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                      <motion.div
+                        key={product.id}
+                        layout
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.4 }}
+                        className="group w-full min-w-0"
+                      >
+                        <div className="relative bg-white rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100 w-full">
+                          <Image
+                            src={imageErrors.has(product.id) ? fallbackImage : product.image}
+                            alt={product.name}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            onError={() => handleImageError(product.id)}
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className={cn(
                         "absolute top-1 md:top-4",
                         isRtl ? "right-1 md:right-4" : "left-1 md:left-4"
