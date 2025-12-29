@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n";
-import { Hexagon, Target, History, Users } from "lucide-react";
+import { Target, History } from "lucide-react";
 
 export default function AboutPage() {
   const { t } = useLanguage();
