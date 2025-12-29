@@ -1,123 +1,257 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Hexagon, ArrowRight, Menu, Globe, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import type { FC } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/shared/logo";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Globe, Loader } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useScroll } from "@/hooks/use-scroll";
+import { gsap } from "gsap";
 import { useLanguage } from "@/lib/i18n";
 
-export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const navLinks = [
+  { href: "/about", labelKey: "about" },
+  { href: "/process", labelKey: "process" },
+  { href: "/portfolio", labelKey: "portfolio" },
+  { href: "/contact", labelKey: "contact" },
+];
+
+export const Navbar: FC = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, setLanguage, t, isRtl } = useLanguage();
+
+  const { isScrolled, scrollDirection } = useScroll(100);
+  const [isLockedOpen, setIsLockedOpen] = useState(false);
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
+  const rotatingIconRef = useRef<HTMLDivElement>(null);
+
+  const isShrunken = isScrolled && scrollDirection === "down" && !isLockedOpen;
+
+  useEffect(() => {
+    if (scrollDirection === "up") {
+      setIsLockedOpen(false);
+    }
+  }, [scrollDirection]);
+
+  useEffect(() => {
+    const tl = gsap.timeline();
+
+    if (isShrunken) {
+      tl.to(headerRef.current, {
+        width: 56,
+        height: 56,
+        borderRadius: "1rem",
+        duration: 0.4,
+        ease: "power3.inOut",
+      })
+        .to(
+          [navRef.current, langRef.current, logoRef.current],
+          { opacity: 0, duration: 0.2, ease: "power3.inOut" },
+          "-=0.4"
+        )
+        .to(
+          iconRef.current,
+          { opacity: 1, duration: 0.2, ease: "power3.inOut" },
+          "-=0.2"
+        );
+    } else {
+      tl.to(headerRef.current, {
+        width: "auto",
+        height: 56,
+        borderRadius: "9999px",
+        duration: 0.4,
+        ease: "power3.inOut",
+      })
+        .to(
+          iconRef.current,
+          { opacity: 0, duration: 0.2, ease: "power3.inOut" },
+          "-=0.4"
+        )
+        .to(
+          [navRef.current, langRef.current, logoRef.current],
+          { opacity: 1, duration: 0.3, ease: "power3.inOut" },
+          "-=0.3"
+        );
+    }
+  }, [isShrunken]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (rotatingIconRef.current) {
+        const rotation = window.scrollY / 5;
+        gsap.to(rotatingIconRef.current, {
+          rotation: rotation,
+          duration: 0.1,
+          ease: "power1.out",
+        });
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleLanguage = () => {
-    setLanguage(language === "en" ? "ar" : "en");
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+
+  const handleLanguageChange = (newLang: "en" | "ar") => {
+    setLanguage(newLang);
   };
 
   return (
     <>
-        <nav
-          className={cn(
-            "fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-200 transition-all duration-300",
-            isScrolled ? "shadow-md h-16" : "h-20"
-          )}
+      <header
+        className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50 cursor-pointer"
+        onMouseEnter={() => {
+          if (isShrunken) setIsLockedOpen(true);
+        }}
+        onClick={() => {
+          if (isShrunken) window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
+        <div
+          ref={headerRef}
+          className="flex h-14 items-center justify-center border border-stone-200/50 bg-white/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden"
         >
-          <div className="max-w-7xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-            <div className="bg-orange-600 text-white p-1.5 rounded-lg group-hover:bg-slate-900 transition-colors duration-300">
-              <Hexagon strokeWidth={2} className="w-6 h-6" />
+          <div ref={iconRef} className="absolute opacity-0 text-slate-900">
+            <div ref={rotatingIconRef}>
+              <Loader />
             </div>
-            <span className="text-xl tracking-tight font-semibold text-slate-900">
-              RubberMfg<span className="text-slate-400 font-normal">.inc</span>
-            </span>
+          </div>
+          <Link
+            href="/"
+            className={cn("flex-shrink-0", isRtl ? "ml-6" : "mr-6")}
+          >
+            <div ref={logoRef}>
+              <Logo />
+            </div>
           </Link>
-
-                <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
-                  <Link href="/" className="text-slate-900 hover:text-orange-600 transition-colors">
-                    {t("home")}
-                  </Link>
-                  <Link href="/about" className="hover:text-slate-900 transition-colors">
-                    {t("about")}
-                  </Link>
-                  <Link href="/contact" className="hover:text-slate-900 transition-colors">
-                    {t("contact")}
-                  </Link>
-                </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors px-3 py-1.5 rounded-full hover:bg-stone-100"
-              >
-                <Globe className="w-4 h-4" />
-                <span>{language === "en" ? "العربية" : "English"}</span>
-              </button>
+          <nav
+            ref={navRef}
+            className={cn(
+              "hidden md:flex items-center",
+              isRtl ? "space-x-reverse space-x-6" : "space-x-6"
+            )}
+          >
+            {navLinks.map((link) => (
               <Link
-                href="/contact"
-                className="hidden md:flex bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-slate-800 transition-all hover:shadow-lg items-center gap-2"
+                key={link.href}
+                href={link.href}
+                className="relative text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors group"
               >
-                {t("requestQuotation")}
-                <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
+                {t(link.labelKey)}
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-orange-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out"></span>
               </Link>
-            <button 
-              className="md:hidden text-slate-900 p-2 hover:bg-stone-100 rounded-full transition-colors"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            ))}
+          </nav>
+
+          <div
+            ref={langRef}
+            className={cn(
+              "hidden md:flex items-center",
+              isRtl ? "mr-4" : "ml-4"
+            )}
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Globe className="h-[1.2rem] w-[1.2rem]" />
+                  <span className="sr-only">Toggle language</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ar")}>
+                  العربية
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <div
+            className={cn(
+              "md:hidden",
+              isRtl ? "mr-auto" : "ml-auto",
+              mobileMenuOpen ? "invisible" : "visible"
+            )}
+          >
+            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+              <Menu />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-white transition-transform duration-300 md:hidden",
-          isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+          "fixed inset-0 z-40 bg-white/95 backdrop-blur-xl md:hidden transition-opacity duration-300 ease-in-out",
+          mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         )}
+        dir={isRtl ? "rtl" : "ltr"}
       >
-            <div className="flex flex-col items-center justify-center h-full gap-8 p-6 pt-24 overflow-y-auto">
-              <Link 
-                href="/" 
-                className="text-2xl font-semibold text-slate-900"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {t("home")}
-              </Link>
-                <Link 
-                  href="/about" 
-                  className="text-2xl font-semibold text-slate-900"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {t("about")}
-                </Link>
-                <Link 
-                  href="/contact" 
-                  className="text-2xl font-semibold text-slate-900"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {t("contact")}
-                </Link>
+        <div className="absolute top-4 right-4" dir="ltr">
+          <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+            <X />
+            <span className="sr-only">Close menu</span>
+          </Button>
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center h-full">
+          <nav className="flex flex-col items-center space-y-8">
+            {navLinks.map((link) => (
               <Link
-                href="/contact"
-                className="mt-4 bg-slate-900 text-white px-8 py-4 rounded-full text-lg font-medium w-full text-center"
-                onClick={() => setIsMobileMenuOpen(false)}
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-2xl font-medium text-slate-900 hover:text-orange-600 transition-colors"
               >
+                {t(link.labelKey)}
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-8 flex gap-4">
+            <Button
+              variant={language === "en" ? "secondary" : "ghost"}
+              onClick={() => {
+                handleLanguageChange("en");
+                setMobileMenuOpen(false);
+              }}
+            >
+              English
+            </Button>
+            <Button
+              variant={language === "ar" ? "secondary" : "ghost"}
+              onClick={() => {
+                handleLanguageChange("ar");
+                setMobileMenuOpen(false);
+              }}
+            >
+              العربية
+            </Button>
+          </div>
+          <div className="absolute bottom-10">
+            <Button asChild size="lg" variant="outline">
+              <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
                 {t("requestQuotation")}
               </Link>
-            </div>
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   );
-}
+};
