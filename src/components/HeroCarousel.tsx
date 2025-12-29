@@ -110,7 +110,7 @@ export function HeroCarousel() {
               </div>
   
             <div className={cn(
-              "absolute inset-0 flex flex-col justify-end p-6 sm:p-10 md:p-16 lg:p-24 text-white max-w-7xl mx-auto z-10",
+              "absolute inset-0 flex flex-col justify-end pt-32 pb-12 sm:pt-40 sm:pb-16 md:pt-48 md:pb-20 lg:pt-56 lg:pb-24 px-6 sm:px-10 md:px-16 lg:px-24 text-white max-w-7xl mx-auto z-10",
               isRtl ? "text-right" : "text-left"
             )}>
               <div className="max-w-4xl">

@@ -58,7 +58,7 @@ export default function ContactPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-slate-900 overflow-hidden">
+        <section className="relative pt-24 pb-16 md:pt-36 md:pb-24 bg-slate-900 overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
@@ -116,14 +116,14 @@ export default function ContactPage() {
                       <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-500", info.color)}>
                         <info.icon className="w-6 h-6" />
                       </div>
-                      <div className="flex flex-col justify-center">
+                      <div className="flex flex-col justify-center min-w-0">
                         <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">{info.label}</p>
                         {info.href ? (
-                          <a href={info.href} className="text-lg text-slate-900 font-bold hover:text-orange-600 transition-colors">
+                          <a href={info.href} className="text-lg text-slate-900 font-bold hover:text-orange-600 transition-colors break-all">
                             {info.value}
                           </a>
                         ) : (
-                          <p className="text-lg text-slate-900 font-bold">{info.value}</p>
+                          <p className="text-lg text-slate-900 font-bold break-all">{info.value}</p>
                         )}
                       </div>
                     </motion.div>
