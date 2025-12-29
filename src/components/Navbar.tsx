@@ -19,8 +19,6 @@ import { useLanguage } from "@/lib/i18n";
 
 const navLinks = [
   { href: "/about", labelKey: "about" },
-  { href: "/process", labelKey: "process" },
-  { href: "/portfolio", labelKey: "portfolio" },
   { href: "/contact", labelKey: "contact" },
 ];
 
