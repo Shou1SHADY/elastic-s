@@ -16,7 +16,7 @@ export default function AboutPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-28 md:pt-40">
+        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-32 md:pt-48 pb-20 md:pb-32">
           <div className="absolute inset-0 z-0 opacity-40">
             <img 
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" 
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1565608438257-fac33279661e?auto=format&fit=crop&q=80" 
+                  src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80" 
                   alt="Factory Floor"
                   className="w-full h-full object-cover"
                 />
