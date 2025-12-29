@@ -27,12 +27,13 @@ export function ProductCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
   const { t, isRtl } = useLanguage();
 
   useEffect(() => {
-    setVisibleCount(8);
+    setCurrentPage(1);
   }, [activeCategory]);
 
   useEffect(() => {
@@ -105,21 +106,21 @@ export function ProductCatalog() {
             <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
           </div>
         ) : (
-          <motion.div 
-            layout
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProducts.slice(0, visibleCount).map((product) => (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
-                  className="group"
-                >
+            <motion.div 
+              layout
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                  <motion.div
+                    key={product.id}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4 }}
+                    className="group"
+                  >
                   <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
                     <Image
                       src={imageErrors.has(product.id) ? fallbackImage : product.image}
@@ -150,16 +151,45 @@ export function ProductCatalog() {
           </motion.div>
         )}
 
-      {/* Show More / View All */}
-      <div className="mt-16 flex flex-col items-center gap-6">
-        {filteredProducts.length > visibleCount && (
-          <button 
-            onClick={() => setVisibleCount(prev => prev + 8)}
-            className="px-8 py-3 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-colors shadow-lg"
-          >
-            {t("showMore")}
-          </button>
-        )}
+        {/* Pagination */}
+        <div className="mt-16 flex flex-col items-center gap-8">
+          {filteredProducts.length > itemsPerPage && (
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={cn(
+                  "px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 border",
+                  currentPage === 1 
+                    ? "bg-stone-50 text-stone-400 border-stone-200 cursor-not-allowed"
+                    : "bg-white text-slate-900 border-slate-200 hover:border-slate-900"
+                )}
+              >
+                <ArrowRight className={cn("w-4 h-4 rotate-180", isRtl && "rotate-0")} />
+                {t("previous")}
+              </button>
+              
+              <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+                <span className="text-slate-900">{currentPage}</span>
+                <span>/</span>
+                <span>{Math.ceil(filteredProducts.length / itemsPerPage)}</span>
+              </div>
+
+              <button 
+                onClick={() => setCurrentPage(prev => Math.min(Math.ceil(filteredProducts.length / itemsPerPage), prev + 1))}
+                disabled={currentPage * itemsPerPage >= filteredProducts.length}
+                className={cn(
+                  "px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 border",
+                  currentPage * itemsPerPage >= filteredProducts.length
+                    ? "bg-stone-50 text-stone-400 border-stone-200 cursor-not-allowed"
+                    : "bg-slate-900 text-white border-slate-900 hover:bg-slate-800"
+                )}
+              >
+                {t("next")}
+                <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
+              </button>
+            </div>
+          )}
         
         <div className="text-center pt-4">
           <button className="inline-flex items-center gap-2 text-slate-900 font-semibold border-b border-slate-900 pb-1 hover:text-orange-600 hover:border-orange-600 transition-all">
