@@ -25,13 +25,13 @@ export function Navbar() {
 
   return (
     <>
-      <nav
-        className={cn(
-          "fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-200 transition-all duration-300",
-          isScrolled ? "shadow-md h-16" : "h-20"
-        )}
-      >
-        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        <nav
+          className={cn(
+            "fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-200 transition-all duration-300",
+            isScrolled ? "shadow-md h-16" : "h-20"
+          )}
+        >
+          <div className="max-w-7xl mx-auto px-4 md:px-6 h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group cursor-pointer">
             <div className="bg-orange-600 text-white p-1.5 rounded-lg group-hover:bg-slate-900 transition-colors duration-300">

@@ -80,69 +80,69 @@ export function HeroCarousel() {
     return slides[index].image;
   };
 
-  return (
-    <header className="relative w-full h-[85vh] overflow-hidden bg-stone-100 flex items-center mt-20">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 w-full h-full"
-        >
-          <div className="absolute inset-0 z-0">
-            <Image
-                src={getImageSrc(current)}
-                alt={slides[current].title}
-                fill
-                unoptimized
-                className="object-cover"
-                priority
-                onError={() => handleImageError(current)}
-              />
-            <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
-          </div>
-
-          <div className={cn(
-            "absolute bottom-0 w-full p-8 md:p-16 text-white max-w-4xl z-10",
-            isRtl ? "right-0 text-right" : "left-0 text-left"
-          )}>
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="inline-block py-1 px-3 border border-white/30 rounded-full text-xs font-medium uppercase tracking-wider mb-4 backdrop-blur-sm"
-            >
-              {slides[current].tag}
-            </motion.span>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-4xl md:text-7xl font-semibold tracking-tight mb-4 leading-tight"
-            >
-              {slides[current].title}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-lg md:text-xl text-stone-200 mb-8 max-w-2xl font-light"
-            >
-              {slides[current].description}
-            </motion.p>
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-white text-slate-900 px-6 py-3 rounded-full font-medium hover:bg-orange-500 hover:text-white transition-colors flex items-center gap-2"
-            >
-              {t("viewCollection")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-            </motion.button>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+    return (
+      <header className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden bg-stone-100 flex items-center mt-20">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0 w-full h-full"
+          >
+            <div className="absolute inset-0 z-0">
+              <Image
+                  src={getImageSrc(current)}
+                  alt={slides[current].title}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                  priority
+                  onError={() => handleImageError(current)}
+                />
+              <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/95 via-slate-900/20 to-transparent"></div>
+            </div>
+  
+            <div className={cn(
+              "absolute bottom-0 w-full p-6 md:p-16 text-white max-w-4xl z-10",
+              isRtl ? "right-0 text-right" : "left-0 text-left"
+            )}>
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="inline-block py-1 px-3 border border-white/30 rounded-full text-[10px] md:text-xs font-medium uppercase tracking-wider mb-3 md:mb-4 backdrop-blur-sm"
+              >
+                {slides[current].tag}
+              </motion.span>
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-3xl md:text-7xl font-bold tracking-tight mb-3 md:mb-4 leading-[1.1]"
+              >
+                {slides[current].title}
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="text-base md:text-xl text-stone-200 mb-6 md:mb-8 max-w-2xl font-light leading-relaxed"
+              >
+                {slides[current].description}
+              </motion.p>
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-white text-slate-900 px-5 py-2.5 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 shadow-xl"
+              >
+                {t("viewCollection")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
+              </motion.button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
         {/* Carousel Indicators with Progress */}
         <div className={cn(

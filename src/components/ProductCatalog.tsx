@@ -60,37 +60,37 @@ export function ProductCatalog() {
     setImageErrors((prev) => new Set(prev).add(productId));
   };
 
-  return (
-    <main className="max-w-7xl mx-auto px-6 py-16 overflow-x-hidden" id="products">
+    return (
+    <main className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 overflow-x-hidden" id="products">
       {/* Section Header */}
-      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="mb-10 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className={cn(isRtl && "text-right")}>
-          <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight mb-3">
+          <h2 className="text-2xl md:text-4xl font-bold text-slate-900 tracking-tight mb-2 md:mb-4">
             {t("productCatalog")}
           </h2>
-          <p className="text-lg text-slate-500 max-w-xl">
+          <p className="text-base md:text-lg text-slate-500 max-w-xl leading-relaxed">
             {t("catalogDescription")}
           </p>
         </div>
         <div className="hidden md:block">
-          <button className="text-slate-500 hover:text-slate-900 font-medium flex items-center gap-2 text-sm">
+          <button className="text-slate-500 hover:text-slate-900 font-medium flex items-center gap-2 text-sm transition-colors">
             {t("downloadCatalog")} <Download className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Sticky Filter Bar */}
-      <div className="sticky top-16 md:top-20 z-30 py-4 bg-stone-50/95 backdrop-blur border-b border-stone-200 mb-10 w-full">
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 mask-fade-edges">
+      <div className="sticky top-16 md:top-20 z-30 -mx-4 px-4 md:mx-0 md:px-0 py-4 bg-white/95 backdrop-blur-md border-b border-stone-100 mb-8 w-screen md:w-full">
+        <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-1">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={cn(
-                "whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all",
+                "whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all",
                 activeCategory === cat.id
-                  ? "bg-slate-900 text-white shadow-md"
-                  : "bg-white border border-stone-200 text-slate-600 hover:border-slate-400 hover:text-slate-900"
+                  ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105"
+                  : "bg-stone-50 text-slate-600 hover:bg-stone-100 border border-transparent"
               )}
             >
               {cat.label}
@@ -101,46 +101,46 @@ export function ProductCatalog() {
 
         {/* Product Grid */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
           </div>
         ) : (
           <motion.div 
             layout
-            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-6 gap-y-6 md:gap-y-10"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8"
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.slice(0, visibleCount).map((product) => (
                 <motion.div
                   key={product.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className="group cursor-pointer"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                  className="group"
                 >
-                  <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 aspect-square md:aspect-[4/3] border border-stone-100">
+                  <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
                     <Image
                       src={imageErrors.has(product.id) ? fallbackImage : product.image}
                       alt={product.name}
                       fill
                       unoptimized
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
                       onError={() => handleImageError(product.id)}
                     />
-                    <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/5 transition-colors" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <div className={cn(
-                      "absolute top-2 md:top-3",
-                      isRtl ? "right-2 md:right-3" : "left-2 md:left-3"
+                      "absolute top-2 md:top-4",
+                      isRtl ? "right-2 md:right-4" : "left-2 md:left-4"
                     )}>
-                      <span className="bg-white/90 backdrop-blur text-slate-900 text-[10px] md:text-xs font-semibold px-2 py-0.5 md:px-2.5 md:py-1 rounded-md border border-stone-100 shadow-sm">
+                      <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[10px] md:text-xs font-bold px-2 py-1 rounded-md shadow-sm border border-stone-100">
                         {product.categoryLabel}
                       </span>
                     </div>
                   </div>
-                  <div className={cn("mt-3 md:mt-4 px-1", isRtl && "text-right")}>
-                    <h3 className="text-sm md:text-lg font-semibold text-slate-900 tracking-tight group-hover:text-orange-600 transition-colors line-clamp-1">
+                  <div className={cn("mt-3 md:mt-5 px-1", isRtl && "text-right")}>
+                    <h3 className="text-sm md:text-lg font-bold text-slate-900 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2">
                       {product.name}
                     </h3>
                   </div>
