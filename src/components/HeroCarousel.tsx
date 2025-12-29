@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const SLIDE_DURATION = 5000;
+const SLIDE_DURATION = 8000;
 const BUCKET_URL = "https://logewufqgmgxufkovpuw.supabase.co/storage/v1/object/public/corporate";
 
 const fallbackImages = [
