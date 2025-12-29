@@ -8,9 +8,18 @@ import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const SLIDE_DURATION = 5000;
+const BUCKET_URL = "https://logewufqgmgxufkovpuw.supabase.co/storage/v1/object/public/corporate";
+
+const fallbackImages = [
+  "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=2670&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1616606103915-dea7be788566?q=80&w=2671&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1590523278191-995cbcda646b?q=80&w=2532&auto=format&fit=crop",
+];
 
 export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
   const { t, isRtl } = useLanguage();
 
   const slides = useMemo(() => [
@@ -18,30 +27,58 @@ export function HeroCarousel() {
       tag: t("tacticalCollection"),
       title: t("tacticalTitle"),
       description: t("tacticalDesc"),
-      image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=2670&auto=format&fit=crop",
+      image: `${BUCKET_URL}/army/1.jpeg`,
     },
     {
       tag: t("brandMerch"),
       title: t("brandTitle"),
       description: t("brandDesc"),
-      image: "https://images.unsplash.com/photo-1616606103915-dea7be788566?q=80&w=2671&auto=format&fit=crop",
+      image: `${BUCKET_URL}/coasters/1.jpeg`,
     },
     {
       tag: t("industrialParts"),
       title: t("industrialTitle"),
       description: t("industrialDesc"),
-      image: "https://images.unsplash.com/photo-1590523278191-995cbcda646b?q=80&w=2532&auto=format&fit=crop",
+      image: `${BUCKET_URL}/police/1.jpeg`,
     },
   ], [t]);
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
+    setProgress(0);
   }, [slides.length]);
 
   useEffect(() => {
-    const timer = setInterval(nextSlide, SLIDE_DURATION);
-    return () => clearInterval(timer);
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) return prev;
+        return prev + (100 / (SLIDE_DURATION / 50));
+      });
+    }, 50);
+
+    const slideTimer = setInterval(nextSlide, SLIDE_DURATION);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(slideTimer);
+    };
   }, [nextSlide]);
+
+  const goToSlide = (index: number) => {
+    setCurrent(index);
+    setProgress(0);
+  };
+
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => new Set(prev).add(index));
+  };
+
+  const getImageSrc = (index: number) => {
+    if (imageErrors.has(index)) {
+      return fallbackImages[index];
+    }
+    return slides[index].image;
+  };
 
   return (
     <header className="relative w-full h-[85vh] overflow-hidden bg-stone-100 flex items-center mt-20">
@@ -56,12 +93,14 @@ export function HeroCarousel() {
         >
           <div className="absolute inset-0 z-0">
             <Image
-              src={slides[current].image}
-              alt={slides[current].title}
-              fill
-              className="object-cover"
-              priority
-            />
+                src={getImageSrc(current)}
+                alt={slides[current].title}
+                fill
+                unoptimized
+                className="object-cover"
+                priority
+                onError={() => handleImageError(current)}
+              />
             <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
           </div>
 
@@ -105,30 +144,30 @@ export function HeroCarousel() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Carousel Indicators */}
-      <div className={cn(
-        "absolute bottom-8 flex gap-2 z-20",
-        isRtl ? "left-8" : "right-8"
-      )}>
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrent(index)}
-            className="indicator w-8 md:w-12 h-1 bg-white/40 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/80"
-          >
-            <div
-              className={cn(
-                "h-full bg-white w-full transition-transform ease-linear",
-                isRtl ? "origin-right" : "origin-left"
-              )}
-              style={{
-                transform: current === index ? "scaleX(1)" : "scaleX(0)",
-                transitionDuration: current === index ? `${SLIDE_DURATION}ms` : "0ms",
-              }}
-            />
-          </button>
-        ))}
-      </div>
-    </header>
-  );
-}
+        {/* Carousel Indicators with Progress */}
+        <div className={cn(
+          "absolute bottom-8 flex gap-2 z-20",
+          isRtl ? "left-8" : "right-8"
+        )}>
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className="w-8 md:w-12 h-1 bg-white/40 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/60"
+            >
+              <div
+                className={cn(
+                  "h-full bg-white rounded-full",
+                  isRtl ? "origin-right" : "origin-left"
+                )}
+                style={{
+                  width: current === index ? `${progress}%` : current > index ? "100%" : "0%",
+                  transition: current === index ? "width 50ms linear" : "none",
+                }}
+              />
+            </button>
+          ))}
+        </div>
+      </header>
+    );
+  }
