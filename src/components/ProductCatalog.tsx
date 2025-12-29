@@ -104,62 +104,62 @@ export function ProductCatalog() {
         </div>
       </div>
 
-          {/* Product Grid */}
-          {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-stone-100 rounded-xl md:rounded-2xl aspect-[4/5] md:aspect-[4/3] mb-4" />
-                  <div className="h-4 bg-stone-100 rounded w-3/4 mb-2" />
-                  <div className="h-4 bg-stone-100 rounded w-1/2" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <motion.div 
-              layout
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8"
-            >
-              <AnimatePresence mode="popLayout">
-                {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4 }}
-                    className="group"
-                  >
-                    <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
-                      <Image
-                        src={imageErrors.has(product.id) ? fallbackImage : product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        onError={() => handleImageError(product.id)}
-                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className={cn(
-                      "absolute top-2 md:top-4",
-                      isRtl ? "right-2 md:right-4" : "left-2 md:left-4"
-                    )}>
-                      <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[10px] md:text-xs font-bold px-2 py-1 rounded-md shadow-sm border border-stone-100">
-                        {product.categoryLabel}
-                      </span>
+            {/* Product Grid */}
+            {loading ? (
+              <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-stone-100 rounded-lg md:rounded-2xl aspect-[4/5] md:aspect-[4/3] mb-4" />
+                    <div className="h-3 bg-stone-100 rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-stone-100 rounded w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <motion.div 
+                layout
+                className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8"
+              >
+                <AnimatePresence mode="popLayout">
+                  {filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                    <motion.div
+                      key={product.id}
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4 }}
+                      className="group"
+                    >
+                      <div className="relative bg-white rounded-lg md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
+                        <Image
+                          src={imageErrors.has(product.id) ? fallbackImage : product.image}
+                          alt={product.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          onError={() => handleImageError(product.id)}
+                          sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 25vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className={cn(
+                        "absolute top-1 md:top-4",
+                        isRtl ? "right-1 md:right-4" : "left-1 md:left-4"
+                      )}>
+                        <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[8px] md:text-xs font-bold px-1.5 py-0.5 rounded-md shadow-sm border border-stone-100">
+                          {product.categoryLabel}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className={cn("mt-3 md:mt-5 px-1", isRtl && "text-right")}>
-                    <h3 className="text-sm md:text-lg font-bold text-slate-900 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        )}
+                    <div className={cn("mt-2 md:mt-5 px-1", isRtl && "text-right")}>
+                      <h3 className="text-[10px] md:text-lg font-bold text-slate-900 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2">
+                        {product.name}
+                      </h3>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
 
         {/* Pagination */}
         <div className="mt-16 flex flex-col items-center gap-8">
