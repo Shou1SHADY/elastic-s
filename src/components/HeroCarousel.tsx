@@ -81,7 +81,7 @@ export function HeroCarousel() {
   };
 
     return (
-      <header className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden bg-stone-100 flex items-center mt-20">
+      <header className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden bg-stone-100 flex items-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}

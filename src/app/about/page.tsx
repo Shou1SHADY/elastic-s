@@ -13,7 +13,7 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       
-      <main className="flex-grow pt-20">
+      <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white">
           <div className="absolute inset-0 z-0 opacity-40">
