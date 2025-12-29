@@ -61,28 +61,28 @@ export function Footer() {
 
             <div className={cn(isRtl && "text-right")}>
               <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">{t("company")}</h4>
-              <ul className="space-y-3 text-sm md:text-base">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    {t("about")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    {t("manufacturingProcess")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    {t("sustainability")}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    {t("careers")}
-                  </Link>
-                </li>
-              </ul>
+                <ul className="space-y-3 text-sm md:text-base">
+                  <li>
+                    <Link href="/about" className="hover:text-white transition-colors">
+                      {t("about")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/contact" className="hover:text-white transition-colors">
+                      {t("contact")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-white transition-colors">
+                      {t("manufacturingProcess")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-white transition-colors">
+                      {t("careers")}
+                    </Link>
+                  </li>
+                </ul>
             </div>
 
             <div className={cn("col-span-2 lg:col-span-1", isRtl && "text-right")}>

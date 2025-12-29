@@ -42,34 +42,34 @@ export function Navbar() {
             </span>
           </Link>
 
-              <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
-                <Link href="/" className="text-slate-900 hover:text-orange-600 transition-colors">
-                  {t("home")}
-                </Link>
-                <a href="#about" className="hover:text-slate-900 transition-colors">
-                  {t("about")}
-                </a>
-                <a href="#contact" className="hover:text-slate-900 transition-colors">
-                  {t("contact")}
-                </a>
-              </div>
+                <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
+                  <Link href="/" className="text-slate-900 hover:text-orange-600 transition-colors">
+                    {t("home")}
+                  </Link>
+                  <Link href="/about" className="hover:text-slate-900 transition-colors">
+                    {t("about")}
+                  </Link>
+                  <Link href="/contact" className="hover:text-slate-900 transition-colors">
+                    {t("contact")}
+                  </Link>
+                </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors px-3 py-1.5 rounded-full hover:bg-stone-100"
-            >
-              <Globe className="w-4 h-4" />
-              <span>{language === "en" ? "العربية" : "English"}</span>
-            </button>
-            <a
-              href="#contact"
-              className="hidden md:flex bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-slate-800 transition-all hover:shadow-lg items-center gap-2"
-            >
-              {t("requestQuotation")}
-              <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-            </a>
+            {/* Actions */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors px-3 py-1.5 rounded-full hover:bg-stone-100"
+              >
+                <Globe className="w-4 h-4" />
+                <span>{language === "en" ? "العربية" : "English"}</span>
+              </button>
+              <Link
+                href="/contact"
+                className="hidden md:flex bg-slate-900 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-slate-800 transition-all hover:shadow-lg items-center gap-2"
+              >
+                {t("requestQuotation")}
+                <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
+              </Link>
             <button 
               className="md:hidden text-slate-900 p-2 hover:bg-stone-100 rounded-full transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -87,36 +87,36 @@ export function Navbar() {
           isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}
       >
-          <div className="flex flex-col items-center justify-center h-full gap-8 p-6 pt-24 overflow-y-auto">
-            <Link 
-              href="/" 
-              className="text-2xl font-semibold text-slate-900"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t("home")}
-            </Link>
-              <a 
-                href="#about" 
+            <div className="flex flex-col items-center justify-center h-full gap-8 p-6 pt-24 overflow-y-auto">
+              <Link 
+                href="/" 
                 className="text-2xl font-semibold text-slate-900"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("about")}
-              </a>
-              <a 
-                href="#contact" 
-                className="text-2xl font-semibold text-slate-900"
+                {t("home")}
+              </Link>
+                <Link 
+                  href="/about" 
+                  className="text-2xl font-semibold text-slate-900"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {t("about")}
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="text-2xl font-semibold text-slate-900"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {t("contact")}
+                </Link>
+              <Link
+                href="/contact"
+                className="mt-4 bg-slate-900 text-white px-8 py-4 rounded-full text-lg font-medium w-full text-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("contact")}
-              </a>
-            <a
-              href="#contact"
-              className="mt-4 bg-slate-900 text-white px-8 py-4 rounded-full text-lg font-medium w-full text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t("requestQuotation")}
-            </a>
-          </div>
+                {t("requestQuotation")}
+              </Link>
+            </div>
       </div>
     </>
   );
