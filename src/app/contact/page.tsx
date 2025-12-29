@@ -14,25 +14,25 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const contactInfo = [
+    const contactInfo = [
     {
       icon: Phone,
       label: t("phone"),
-      value: "+1 (555) 123-4567",
-      href: "tel:+15551234567",
+      value: "01013140080",
+      href: "tel:01013140080",
       color: "bg-blue-50 text-blue-600"
     },
     {
       icon: Mail,
       label: t("email"),
-      value: "eng@rubbermanuf.com",
-      href: "mailto:eng@rubbermanuf.com",
+      value: "Admin@elastic-eg.com",
+      href: "mailto:Admin@elastic-eg.com",
       color: "bg-orange-50 text-orange-600"
     },
     {
       icon: Clock,
       label: t("hours"),
-      value: "Mon - Fri: 8am - 6pm",
+      value: "Mon - Sat: 9am - 6pm",
       color: "bg-slate-50 text-slate-600"
     }
   ];
@@ -280,17 +280,20 @@ export default function ContactPage() {
                 <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-orange-600/20">
                   <MapPin className="w-6 h-6" />
                 </div>
-                <h3 className="text-3xl font-black mb-6 italic uppercase tracking-tighter">{t("location")}</h3>
-                <p className="text-lg text-slate-200 leading-relaxed mb-8">
-                  Industrial Zone - HQ<br />
-                  124 Manufacturing Way, Tech Park<br />
-                  Suite 500, Industrial District
-                </p>
-                <div className="flex gap-4">
-                  <button className="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-orange-500 hover:text-white transition-all">
-                    Get Directions
-                  </button>
-                </div>
+                  <h3 className="text-3xl font-black mb-6 italic uppercase tracking-tighter">{t("location")}</h3>
+                  <p className="text-lg text-slate-200 leading-relaxed mb-8">
+                    Obour City, Cairo, Egypt
+                  </p>
+                  <div className="flex gap-4">
+                    <a 
+                      href="https://maps.app.goo.gl/D83f5i4as62NNb4V7?g_st=aw" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-orange-500 hover:text-white transition-all inline-block"
+                    >
+                      Get Directions
+                    </a>
+                  </div>
               </motion.div>
 
               <div className={cn("flex flex-col gap-6", isRtl && "items-end")}>

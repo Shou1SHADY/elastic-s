@@ -73,15 +73,15 @@ export function ProductCatalog() {
             {t("catalogDescription")}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <a 
-            href="/catalog.pdf" 
-            download="Orchids_Catalog.pdf"
-            className="text-slate-500 hover:text-slate-900 font-medium flex items-center gap-2 text-sm transition-colors"
-          >
-            {t("downloadCatalog")} <Download className="w-4 h-4" />
-          </a>
-        </div>
+          <div className="flex items-center gap-4">
+            <a 
+              href="/catalog.pdf" 
+              download="Elastic_Catalog.pdf"
+              className="text-slate-500 hover:text-slate-900 font-medium flex items-center gap-2 text-sm transition-colors"
+            >
+              {t("downloadCatalog")} <Download className="w-4 h-4" />
+            </a>
+          </div>
       </div>
 
       {/* Sticky Filter Bar */}

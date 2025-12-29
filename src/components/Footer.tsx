@@ -1,9 +1,10 @@
 "use client";
 
-import { Hexagon, Linkedin, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Linkedin, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/shared/logo";
 
 export function Footer() {
   const { t, isRtl } = useLanguage();
@@ -14,8 +15,9 @@ export function Footer() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-16">
             <div className={cn("col-span-2 lg:col-span-1", isRtl && "text-right")}>
               <div className={cn("flex items-center gap-2 mb-6 text-white", isRtl && "justify-end lg:justify-start")}>
-                <Hexagon className="w-6 h-6 text-orange-500" />
-                <span className="text-xl font-bold tracking-tight">RubberMfg</span>
+                <Link href="/">
+                  <Logo />
+                </Link>
               </div>
               <p className="text-stone-500 mb-6 text-sm md:text-base leading-relaxed">
                 {t("footerDesc")}
@@ -89,13 +91,18 @@ export function Footer() {
               <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">{t("contact")}</h4>
               <ul className="space-y-4 text-sm md:text-base">
                 <li className={cn("flex items-center gap-3", isRtl && "flex-row-reverse")}>
-                  <Mail className="w-4 h-4 text-orange-500" /> sales@rubbermfg.com
+                  <Mail className="w-4 h-4 text-orange-500" /> 
+                  <a href="mailto:Admin@elastic-eg.com" className="hover:text-white transition-colors">Admin@elastic-eg.com</a>
                 </li>
                 <li className={cn("flex items-center gap-3", isRtl && "flex-row-reverse")}>
-                  <Phone className="w-4 h-4 text-orange-500" /> +1 (555) 123-4567
+                  <Phone className="w-4 h-4 text-orange-500" />
+                  <a href="tel:01013140080" className="hover:text-white transition-colors">01013140080</a>
                 </li>
                 <li className={cn("flex items-center gap-3", isRtl && "flex-row-reverse")}>
-                  <MapPin className="w-4 h-4 text-orange-500" /> 12 Industrial Way, Tech Park
+                  <MapPin className="w-4 h-4 text-orange-500" /> 
+                  <a href="https://maps.app.goo.gl/D83f5i4as62NNb4V7?g_st=aw" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    Cairo, Egypt
+                  </a>
                 </li>
               </ul>
             </div>
@@ -104,7 +111,7 @@ export function Footer() {
             "border-t border-stone-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm",
             isRtl && "md:flex-row-reverse"
           )}>
-            <p className="text-stone-600">© 2024 RubberMfg Inc. {t("allRightsReserved")}</p>
+            <p className="text-stone-600">© 2025 Elastic. {t("allRightsReserved")}</p>
             <div className="flex gap-6 mt-4 md:mt-0">
               <Link href="#" className="hover:text-white transition-colors">
                 {t("privacyPolicy")}
@@ -116,5 +123,5 @@ export function Footer() {
           </div>
         </div>
       </footer>
-  );
+    );
 }

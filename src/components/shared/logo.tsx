@@ -1,14 +1,17 @@
 import React from 'react';
+import Image from 'next/image';
 
 const Logo = () => {
   return (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center font-bold text-white text-xl italic shadow-inner">
-        O
-      </div>
-      <span className="text-xl font-bold tracking-tighter text-slate-900 italic">
-        ORCHIDS
-      </span>
+      <Image 
+        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/document-uploads/logo-1767006168714.png?width=8000&height=8000&resize=contain"
+        alt="Elastic Logo"
+        width={140}
+        height={40}
+        className="h-10 w-auto object-contain"
+        priority
+      />
     </div>
   );
 };

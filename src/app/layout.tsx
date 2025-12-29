@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "RubberMfg - Custom B2B Manufacturing",
+  title: "Elastic - Custom B2B Manufacturing",
   description: "Premium B2B manufacturing partner for global brands. Custom rubber solutions delivered with precision.",
 };
 
