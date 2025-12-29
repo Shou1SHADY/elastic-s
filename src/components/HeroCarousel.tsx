@@ -81,7 +81,7 @@ export function HeroCarousel() {
   };
 
     return (
-      <header className="relative w-full h-[70vh] md:h-[85vh] overflow-hidden bg-stone-100 flex items-center">
+      <header className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] overflow-hidden bg-stone-100 flex items-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
@@ -110,7 +110,7 @@ export function HeroCarousel() {
               </div>
   
             <div className={cn(
-              "absolute bottom-0 w-full p-6 md:p-16 text-white max-w-4xl z-10",
+              "absolute bottom-0 w-full p-6 sm:p-10 md:p-16 text-white max-w-4xl z-10",
               isRtl ? "right-0 text-right" : "left-0 text-left"
             )}>
               <motion.span
@@ -125,7 +125,7 @@ export function HeroCarousel() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-3xl md:text-7xl font-bold tracking-tight mb-3 md:mb-4 leading-[1.1]"
+                className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-3 md:mb-4 leading-[1.1] italic uppercase"
               >
                 {slides[current].title}
               </motion.h1>
@@ -133,7 +133,7 @@ export function HeroCarousel() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="text-base md:text-xl text-stone-200 mb-6 md:mb-8 max-w-2xl font-light leading-relaxed"
+                className="text-sm sm:text-base md:text-xl text-stone-200 mb-6 md:mb-8 max-w-2xl font-light leading-relaxed"
               >
                 {slides[current].description}
               </motion.p>
@@ -141,18 +141,18 @@ export function HeroCarousel() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-white text-slate-900 px-5 py-2.5 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 shadow-xl"
+                className="bg-white text-slate-900 px-5 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-full text-xs sm:text-sm md:text-base font-semibold hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 shadow-xl"
               >
                 {t("viewCollection")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
               </motion.button>
             </div>
           </motion.div>
         </AnimatePresence>
-
+  
         {/* Carousel Indicators with Progress */}
         <div className={cn(
-          "absolute bottom-8 flex gap-2 z-20",
-          isRtl ? "left-8" : "right-8"
+          "absolute bottom-6 sm:bottom-8 flex gap-2 z-20",
+          isRtl ? "left-6 sm:left-8" : "right-6 sm:right-8"
         )}>
           {slides.map((_, index) => (
             <button

@@ -7,7 +7,7 @@ import { useLanguage } from "@/lib/i18n";
 import { Target, History } from "lucide-react";
 
 export default function AboutPage() {
-  const { t } = useLanguage();
+  const { t, isRtl } = useLanguage();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -15,7 +15,7 @@ export default function AboutPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-20 md:pt-28">
+        <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-20 md:pt-28">
           <div className="absolute inset-0 z-0 opacity-40">
             <img 
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" 
@@ -51,29 +51,29 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="flex items-center gap-3 mb-6 text-orange-600">
+                <div className={cn("flex items-center gap-3 mb-6 text-orange-600", isRtl && "flex-row-reverse")}>
                   <History className="w-8 h-8" />
                   <h2 className="text-3xl font-bold tracking-tight text-slate-900 uppercase italic">
                     {t("ourStory")}
                   </h2>
                 </div>
-                <p className="text-lg text-slate-600 leading-relaxed mb-6">
+                <p className={cn("text-lg text-slate-600 leading-relaxed mb-6", isRtl && "text-right")}>
                   {t("ourStoryDesc")}
                 </p>
-                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-stone-100">
-                  <div>
-                    <div className="text-3xl font-bold text-slate-900">30+</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wider">Years Exp.</div>
+                  <div className={cn("grid grid-cols-2 sm:grid-cols-3 gap-6 pt-8 border-t border-stone-100", isRtl && "text-right")}>
+                    <div>
+                      <div className="text-2xl md:text-3xl font-bold text-slate-900">30+</div>
+                      <div className="text-[10px] md:text-sm text-slate-500 uppercase tracking-wider">Years Exp.</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl md:text-3xl font-bold text-slate-900">500+</div>
+                      <div className="text-[10px] md:text-sm text-slate-500 uppercase tracking-wider">Molds/Year</div>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <div className="text-2xl md:text-3xl font-bold text-slate-900">45</div>
+                      <div className="text-[10px] md:text-sm text-slate-500 uppercase tracking-wider">Countries</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-3xl font-bold text-slate-900">500+</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wider">Molds/Year</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold text-slate-900">45</div>
-                    <div className="text-sm text-slate-500 uppercase tracking-wider">Countries</div>
-                  </div>
-                </div>
               </motion.div>
 
               <motion.div

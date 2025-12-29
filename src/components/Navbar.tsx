@@ -179,48 +179,48 @@ export const Navbar: FC = () => {
             </DropdownMenu>
           </div>
 
-          <div
-            className={cn(
-              "md:hidden",
-              isRtl ? "mr-auto" : "ml-auto",
-              mobileMenuOpen ? "invisible" : "visible"
-            )}
-          >
-            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
-              <Menu />
-              <span className="sr-only">Toggle menu</span>
+            <div
+              className={cn(
+                "md:hidden transition-opacity duration-300",
+                isRtl ? "mr-auto" : "ml-auto",
+                mobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+              )}
+            >
+              <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+                <Menu />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </div>
+          </div>
+        </header>
+  
+        {/* Mobile Menu Overlay */}
+        <div
+          className={cn(
+            "fixed inset-0 z-[60] bg-white/95 backdrop-blur-xl md:hidden transition-all duration-500 ease-in-out",
+            mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
+          )}
+          dir={isRtl ? "rtl" : "ltr"}
+        >
+          <div className={cn("absolute top-6", isRtl ? "left-6" : "right-6")}>
+            <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="scale-125">
+              <X />
+              <span className="sr-only">Close menu</span>
             </Button>
           </div>
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={cn(
-          "fixed inset-0 z-40 bg-white/95 backdrop-blur-xl md:hidden transition-opacity duration-300 ease-in-out",
-          mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        )}
-        dir={isRtl ? "rtl" : "ltr"}
-      >
-        <div className="absolute top-4 right-4" dir="ltr">
-          <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
-            <X />
-            <span className="sr-only">Close menu</span>
-          </Button>
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center h-full">
-          <nav className="flex flex-col items-center space-y-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-2xl font-medium text-slate-900 hover:text-orange-600 transition-colors"
-              >
-                {t(link.labelKey)}
-              </Link>
-            ))}
-          </nav>
+          <div className="container mx-auto px-6 flex flex-col items-center justify-center h-full">
+            <nav className="flex flex-col items-center space-y-10">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-3xl font-bold text-slate-900 hover:text-orange-600 transition-colors italic uppercase tracking-tighter"
+                >
+                  {t(link.labelKey)}
+                </Link>
+              ))}
+            </nav>
           <div className="mt-8 flex gap-4">
             <Button
               variant={language === "en" ? "secondary" : "ghost"}

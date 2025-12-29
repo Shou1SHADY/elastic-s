@@ -54,67 +54,70 @@ export default function ContactPage() {
               </motion.p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              {/* Contact Info */}
-              <div className="space-y-8">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-stone-200">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6 uppercase tracking-wider italic">
-                    {t("location")}
-                  </h3>
-                  <div className="flex gap-4 mb-8">
-                    <div className="bg-orange-100 p-3 rounded-xl text-orange-600 shrink-0 h-fit">
-                      <MapPin className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-900 mb-1">Industrial Zone - HQ</p>
-                      <p className="text-slate-600 leading-relaxed">
-                        124 Manufacturing Way, Tech Park<br />
-                        Suite 500, Industrial District
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    {contactInfo.map((info, i) => (
-                      <div key={i} className="flex gap-4 items-center">
-                        <div className="bg-slate-100 p-3 rounded-xl text-slate-600 shrink-0">
-                          <info.icon className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">{info.label}</p>
-                          {info.href ? (
-                            <a href={info.href} className="text-slate-900 font-medium hover:text-orange-600 transition-colors">
-                              {info.value}
-                            </a>
-                          ) : (
-                            <p className="text-slate-900 font-medium">{info.value}</p>
-                          )}
-                        </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+                {/* Contact Info */}
+                <div className="space-y-6 md:space-y-8">
+                  <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
+                    <h3 className={cn("text-xl font-bold text-slate-900 mb-6 uppercase tracking-wider italic", isRtl && "text-right")}>
+                      {t("location")}
+                    </h3>
+                    <div className={cn("flex gap-4 mb-8", isRtl && "flex-row-reverse text-right")}>
+                      <div className="bg-orange-100 p-3 rounded-xl text-orange-600 shrink-0 h-fit">
+                        <MapPin className="w-6 h-6" />
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-slate-900 p-8 rounded-2xl text-white overflow-hidden relative group">
-                  <div className="relative z-10">
-                    <h3 className="text-xl font-bold mb-4 italic">Global Distribution</h3>
-                    <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                      We ship worldwide via DHL and FedEx with real-time tracking and customs clearance support.
-                    </p>
-                    <div className="flex -space-x-2">
-                      {[1,2,3,4].map(i => (
-                        <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-bold">
-                          {String.fromCharCode(64 + i)}
+                      <div>
+                        <p className="font-semibold text-slate-900 mb-1">Industrial Zone - HQ</p>
+                        <p className="text-slate-600 leading-relaxed text-sm md:text-base">
+                          124 Manufacturing Way, Tech Park<br />
+                          Suite 500, Industrial District
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {contactInfo.map((info, i) => (
+                        <div key={i} className={cn("flex gap-4 items-center", isRtl && "flex-row-reverse text-right")}>
+                          <div className="bg-slate-100 p-3 rounded-xl text-slate-600 shrink-0">
+                            <info.icon className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">{info.label}</p>
+                            {info.href ? (
+                              <a href={info.href} className="text-sm md:text-base text-slate-900 font-medium hover:text-orange-600 transition-colors">
+                                {info.value}
+                              </a>
+                            ) : (
+                              <p className="text-sm md:text-base text-slate-900 font-medium">{info.value}</p>
+                            )}
+                          </div>
                         </div>
                       ))}
-                      <div className="w-8 h-8 rounded-full border-2 border-slate-900 bg-orange-600 flex items-center justify-center text-[10px] font-bold">
-                        +40
-                      </div>
                     </div>
                   </div>
-                  <Hexagon className="absolute -bottom-8 -right-8 w-32 h-32 text-slate-800 rotate-12 transition-transform group-hover:scale-110" />
+  
+                  <div className="bg-slate-900 p-6 md:p-8 rounded-2xl text-white overflow-hidden relative group">
+                    <div className={cn("relative z-10", isRtl && "text-right")}>
+                      <h3 className="text-xl font-bold mb-4 italic">Global Distribution</h3>
+                      <p className="text-slate-400 text-xs md:text-sm leading-relaxed mb-6">
+                        We ship worldwide via DHL and FedEx with real-time tracking and customs clearance support.
+                      </p>
+                      <div className={cn("flex -space-x-2", isRtl && "flex-row-reverse space-x-reverse justify-end")}>
+                        {[1,2,3,4].map(i => (
+                          <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-bold">
+                            {String.fromCharCode(64 + i)}
+                          </div>
+                        ))}
+                        <div className="w-8 h-8 rounded-full border-2 border-slate-900 bg-orange-600 flex items-center justify-center text-[10px] font-bold">
+                          +40
+                        </div>
+                      </div>
+                    </div>
+                    <Hexagon className={cn(
+                      "absolute -bottom-8 w-32 h-32 text-slate-800 rotate-12 transition-transform group-hover:scale-110",
+                      isRtl ? "-left-8" : "-right-8"
+                    )} />
+                  </div>
                 </div>
-              </div>
 
               {/* Contact Form */}
               <div className="lg:col-span-2">
