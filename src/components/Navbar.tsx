@@ -110,7 +110,7 @@ export const Navbar: FC = () => {
   return (
     <>
       <header
-        className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50 cursor-pointer"
+        className="fixed top-4 sm:top-8 left-1/2 -translate-x-1/2 z-50 cursor-pointer w-[calc(100%-2rem)] sm:w-auto"
         onMouseEnter={() => {
           if (isShrunken) setIsLockedOpen(true);
         }}

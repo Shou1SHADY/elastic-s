@@ -85,8 +85,8 @@ export function ProductCatalog() {
       </div>
 
       {/* Sticky Filter Bar */}
-      <div className="sticky top-[72px] sm:top-20 md:top-24 z-30 py-3 md:py-4 bg-white/95 backdrop-blur-md border-b border-stone-100 mb-8 w-full">
-        <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-1 px-1 -mx-4 md:mx-0 px-4 md:px-0">
+      <div className="sticky top-[72px] sm:top-20 md:top-24 z-30 py-3 md:py-4 bg-white/95 backdrop-blur-md border-b border-stone-100 mb-8 w-full overflow-hidden">
+        <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 md:mx-0 md:px-0">
           {categories.map((cat) => (
             <button
               key={cat.id}
