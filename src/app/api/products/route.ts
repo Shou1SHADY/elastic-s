@@ -42,6 +42,25 @@ interface Product {
 
 const FALLBACK_FILENAMES = ["1.jpeg", "2.jpeg", "3.jpeg", "4.jpeg", "5.jpeg", "6.jpeg", "7.jpeg", "8.jpeg"];
 
+const UNSPLASH_FALLBACKS: Record<Category, string[]> = {
+  army: [
+    "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800",
+    "https://images.unsplash.com/photo-1616606103915-dea7be788566?q=80&w=800",
+  ],
+  police: [
+    "https://images.unsplash.com/photo-1590523278191-995cbcda646b?q=80&w=800",
+    "https://images.unsplash.com/photo-1589114471223-dec0d8d572c6?q=80&w=800",
+  ],
+  "bar-mat": ["https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800"],
+  coasters: ["https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=800"],
+  "flash-memory": ["https://images.unsplash.com/photo-1591405351990-4726e331f141?q=80&w=800"],
+  "fridge-magnet": ["https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800"],
+  label: ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
+  lighter: ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
+  "mobile-holder": ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
+  "pen-accessories": ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
+};
+
 async function checkFileExists(url: string) {
   if (!url || url.includes("undefined")) return false;
   try {
@@ -89,9 +108,22 @@ export async function GET() {
             return null;
           });
 
-          const fallbackResults = await Promise.all(fallbackChecks);
-          return fallbackResults.filter((p): p is Product => p !== null);
-        }
+            const fallbackResults = await Promise.all(fallbackChecks);
+            const validFallbacks = fallbackResults.filter((p): p is Product => p !== null);
+            
+            if (validFallbacks.length === 0) {
+              return UNSPLASH_FALLBACKS[category].map((url, index) => ({
+                id: `${category}-unsplash-${index}`,
+                name: `${CATEGORY_LABELS[category]} #${index + 1}`,
+                category,
+                categoryLabel: CATEGORY_LABELS[category],
+                image: url,
+              }));
+            }
+            
+            return validFallbacks;
+          }
+
 
         return data
           .filter((file) => file.name !== ".emptyFolderPlaceholder" && !file.metadata?.mimetype?.startsWith("directory"))

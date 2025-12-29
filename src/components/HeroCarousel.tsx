@@ -8,7 +8,8 @@ import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const SLIDE_DURATION = 8000;
-const BUCKET_URL = "https://logewufqgmgxufkovpuw.supabase.co/storage/v1/object/public/corporate";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/corporate`;
 
 const fallbackImages = [
   "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=2670&auto=format&fit=crop",
