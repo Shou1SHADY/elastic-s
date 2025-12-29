@@ -80,22 +80,37 @@ export async function GET() {
     try {
       const allProducts: Product[] = [];
 
-      // Fetch all objects in the bucket once to avoid multiple HEAD requests
+      // Fetch all objects in the bucket once
       const { data: allObjects, error: listError } = await supabase.storage.from(BUCKET_NAME).list('', {
         recursive: true,
         limit: 100
       });
 
+      // Try listing a specific folder if root listing is empty
+      let foldersToTry = ["army", "police", "coasters"];
+      let additionalObjects: any[] = [];
+      
+      if (!allObjects || allObjects.length === 0) {
+        for (const folder of foldersToTry) {
+          const { data: folderFiles } = await supabase.storage.from(BUCKET_NAME).list(folder);
+          if (folderFiles) {
+            additionalObjects.push(...folderFiles.map(f => ({ ...f, name: `${folder}/${f.name}` })));
+          }
+        }
+      }
+      
+      const combinedObjects = [...(allObjects || []), ...additionalObjects];
+
       if (listError) {
         console.error("Error listing bucket:", listError);
       }
 
-      const hasFiles = allObjects && allObjects.length > 0;
+      const hasFiles = combinedObjects && combinedObjects.length > 0;
 
       const categoryPromises = CATEGORIES.map(async (category) => {
         try {
           // Check if there are any files in this category folder
-          const categoryFiles = allObjects?.filter(obj => obj.name.startsWith(`${category}/`)) || [];
+          const categoryFiles = combinedObjects.filter(obj => obj.name.startsWith(`${category}/`)) || [];
 
           if (categoryFiles.length === 0) {
             // Use Unsplash fallbacks if no files found in category

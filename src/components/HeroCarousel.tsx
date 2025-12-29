@@ -28,7 +28,7 @@ export function HeroCarousel() {
       tag: t("tacticalCollection"),
       title: t("tacticalTitle"),
       description: t("tacticalDesc"),
-      image: `${BUCKET_URL}/army/1.jpeg`,
+      image: `${BUCKET_URL}/army/ABU44231-2_tn.webp`,
     },
     {
       tag: t("brandMerch"),
