@@ -1,184 +1,333 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useLanguage } from "@/lib/i18n";
-import { Mail, Phone, MapPin, Send, Clock, Hexagon } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Clock, Hexagon, ShieldCheck, Zap, Users, CheckCircle2, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export default function ContactPage() {
   const { t, isRtl } = useLanguage();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const contactInfo = [
     {
       icon: Phone,
-      label: "Phone",
+      label: t("phone"),
       value: "+1 (555) 123-4567",
-      href: "tel:+15551234567"
+      href: "tel:+15551234567",
+      color: "bg-blue-50 text-blue-600"
     },
     {
       icon: Mail,
-      label: "Email",
+      label: t("email"),
       value: "eng@rubbermanuf.com",
-      href: "mailto:eng@rubbermanuf.com"
+      href: "mailto:eng@rubbermanuf.com",
+      color: "bg-orange-50 text-orange-600"
     },
     {
       icon: Clock,
-      label: "Hours",
+      label: t("hours"),
       value: "Mon - Fri: 8am - 6pm",
+      color: "bg-slate-50 text-slate-600"
     }
   ];
 
+  const trustBadges = [
+    { icon: Zap, title: t("responseRate"), desc: t("responseRateDesc") },
+    { icon: Users, title: t("technicalConsultation"), desc: t("technicalConsultationDesc") },
+    { icon: ShieldCheck, title: "ISO 9001 Certified", desc: "Highest quality manufacturing standards since 1994." }
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }, 1500);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen selection:bg-orange-100 selection:text-orange-900">
       <Navbar />
       
       <main className="flex-grow">
-        <section className="pt-32 pb-20 md:pt-40 md:pb-24 bg-stone-50">
-          <div className="max-w-7xl mx-auto px-4 md:px-6">
-            <div className="text-center max-w-3xl mx-auto mb-16">
+        {/* Hero Section */}
+        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-slate-900 overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
+          </div>
+          
+          <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+            <div className="text-center max-w-4xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md"
+              >
+                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                Global Manufacturing HQ
+              </motion.div>
               <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 italic"
+                className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 italic uppercase tracking-tighter leading-[0.9]"
               >
                 {t("contactTitle")}
               </motion.h1>
               <motion.p 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-lg text-slate-600"
+                className="text-xl md:text-2xl text-slate-300 font-light max-w-2xl mx-auto leading-relaxed"
               >
                 {t("contactSubtitle")}
               </motion.p>
             </div>
+          </div>
+        </section>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
-                {/* Contact Info */}
-                <div className="space-y-6 md:space-y-8">
-                  <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
-                    <h3 className={cn("text-xl font-bold text-slate-900 mb-6 uppercase tracking-wider italic", isRtl && "text-right")}>
-                      {t("location")}
-                    </h3>
-                    <div className={cn("flex gap-4 mb-8", isRtl && "flex-row-reverse text-right")}>
-                      <div className="bg-orange-100 p-3 rounded-xl text-orange-600 shrink-0 h-fit">
-                        <MapPin className="w-6 h-6" />
+        <section className="py-20 md:py-32 bg-stone-50">
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+              
+              {/* Sidebar Content */}
+              <div className="lg:col-span-4 space-y-12">
+                {/* Contact Cards */}
+                <div className="space-y-6">
+                  <h2 className={cn("text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8", isRtl && "text-right")}>
+                    Connect with us
+                  </h2>
+                  {contactInfo.map((info, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      viewport={{ once: true }}
+                      className={cn("group flex gap-5 p-6 bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all duration-500", isRtl && "flex-row-reverse text-right")}
+                    >
+                      <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-500", info.color)}>
+                        <info.icon className="w-6 h-6" />
                       </div>
-                      <div>
-                        <p className="font-semibold text-slate-900 mb-1">Industrial Zone - HQ</p>
-                        <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-                          124 Manufacturing Way, Tech Park<br />
-                          Suite 500, Industrial District
-                        </p>
+                      <div className="flex flex-col justify-center">
+                        <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">{info.label}</p>
+                        {info.href ? (
+                          <a href={info.href} className="text-lg text-slate-900 font-bold hover:text-orange-600 transition-colors">
+                            {info.value}
+                          </a>
+                        ) : (
+                          <p className="text-lg text-slate-900 font-bold">{info.value}</p>
+                        )}
                       </div>
-                    </div>
-                    
-                    <div className="space-y-6">
-                      {contactInfo.map((info, i) => (
-                        <div key={i} className={cn("flex gap-4 items-center", isRtl && "flex-row-reverse text-right")}>
-                          <div className="bg-slate-100 p-3 rounded-xl text-slate-600 shrink-0">
-                            <info.icon className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">{info.label}</p>
-                            {info.href ? (
-                              <a href={info.href} className="text-sm md:text-base text-slate-900 font-medium hover:text-orange-600 transition-colors">
-                                {info.value}
-                              </a>
-                            ) : (
-                              <p className="text-sm md:text-base text-slate-900 font-medium">{info.value}</p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-  
-                  <div className="bg-slate-900 p-6 md:p-8 rounded-2xl text-white overflow-hidden relative group">
-                    <div className={cn("relative z-10", isRtl && "text-right")}>
-                      <h3 className="text-xl font-bold mb-4 italic">Global Distribution</h3>
-                      <p className="text-slate-400 text-xs md:text-sm leading-relaxed mb-6">
-                        We ship worldwide via DHL and FedEx with real-time tracking and customs clearance support.
-                      </p>
-                      <div className={cn("flex -space-x-2", isRtl && "flex-row-reverse space-x-reverse justify-end")}>
-                        {[1,2,3,4].map(i => (
-                          <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-[10px] font-bold">
-                            {String.fromCharCode(64 + i)}
-                          </div>
-                        ))}
-                        <div className="w-8 h-8 rounded-full border-2 border-slate-900 bg-orange-600 flex items-center justify-center text-[10px] font-bold">
-                          +40
-                        </div>
-                      </div>
-                    </div>
-                    <Hexagon className={cn(
-                      "absolute -bottom-8 w-32 h-32 text-slate-800 rotate-12 transition-transform group-hover:scale-110",
-                      isRtl ? "-left-8" : "-right-8"
-                    )} />
-                  </div>
+                    </motion.div>
+                  ))}
                 </div>
 
-              {/* Contact Form */}
-              <div className="lg:col-span-2">
+                {/* Trust Section */}
+                <div className="space-y-8 bg-slate-900 p-8 rounded-3xl text-white relative overflow-hidden group">
+                  <div className="relative z-10 space-y-8">
+                    {trustBadges.map((badge, i) => (
+                      <div key={i} className={cn("flex gap-4", isRtl && "flex-row-reverse text-right")}>
+                        <div className="bg-orange-600/20 text-orange-500 p-2 rounded-lg h-fit">
+                          <badge.icon className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold mb-1">{badge.title}</h4>
+                          <p className="text-xs text-slate-400 leading-relaxed">{badge.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Hexagon className={cn(
+                    "absolute -bottom-10 -right-10 w-48 h-48 text-white/5 rotate-12 transition-transform group-hover:scale-125 duration-1000",
+                    isRtl && "-left-10 -right-auto rotate-[-12deg]"
+                  )} />
+                </div>
+              </div>
+
+              {/* Main Form Section */}
+              <div className="lg:col-span-8">
                 <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="bg-white p-8 md:p-12 rounded-2xl shadow-lg border border-stone-100"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-white p-8 md:p-16 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-stone-100 relative"
                 >
-                  <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={(e) => e.preventDefault()}>
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">{t("fullName")}</label>
-                      <input 
-                        type="text" 
-                        placeholder="John Doe"
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 transition-all"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">{t("emailAddress")}</label>
-                      <input 
-                        type="email" 
-                        placeholder="john@company.com"
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 transition-all"
-                      />
-                    </div>
-                    <div className="md:col-span-2 space-y-2">
-                      <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">{t("message")}</label>
-                      <textarea 
-                        rows={6}
-                        placeholder="Describe your project requirements..."
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 transition-all resize-none"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <button className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-all hover:shadow-xl flex items-center justify-center gap-3 group">
-                        {t("sendMessage")}
-                        <Send className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${isRtl && "group-hover:-translate-x-1"}`} />
-                      </button>
-                    </div>
-                  </form>
+                  <AnimatePresence mode="wait">
+                    {!submitted ? (
+                      <motion.form 
+                        key="form"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="space-y-10" 
+                        onSubmit={handleSubmit}
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">{t("fullName")}</label>
+                            <input 
+                              required
+                              type="text" 
+                              placeholder="John Doe"
+                              className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 placeholder:text-stone-300 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg"
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">{t("emailAddress")}</label>
+                            <input 
+                              required
+                              type="email" 
+                              placeholder="john@company.com"
+                              className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 placeholder:text-stone-300 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">Industry / Project Type</label>
+                          <select className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg appearance-none">
+                            <option>{t("armyTactical")}</option>
+                            <option>{t("industrialParts")}</option>
+                            <option>{t("brandMerch")}</option>
+                            <option>Other</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">{t("message")}</label>
+                          <textarea 
+                            required
+                            rows={5}
+                            placeholder="Tell us about your technical requirements..."
+                            className="w-full bg-stone-50 border-b-2 border-stone-200 px-1 py-4 text-slate-900 placeholder:text-stone-300 focus:outline-none focus:border-orange-600 transition-all font-medium text-lg resize-none"
+                          />
+                        </div>
+
+                        <button 
+                          disabled={isSubmitting}
+                          className="w-full group relative bg-slate-900 text-white font-black py-6 rounded-2xl overflow-hidden transition-all hover:shadow-2xl hover:shadow-orange-200 active:scale-[0.98]"
+                        >
+                          <div className="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                          <div className="relative flex items-center justify-center gap-4 text-lg uppercase tracking-widest italic">
+                            {isSubmitting ? (
+                              <Loader2 className="w-6 h-6 animate-spin" />
+                            ) : (
+                              <>
+                                {t("sendMessage")}
+                                <Send className={cn("w-6 h-6 transition-transform group-hover:translate-x-2", isRtl && "rotate-180 group-hover:-translate-x-2")} />
+                              </>
+                            )}
+                          </div>
+                        </button>
+                      </motion.form>
+                    ) : (
+                      <motion.div 
+                        key="success"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="text-center py-20"
+                      >
+                        <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
+                          <CheckCircle2 className="w-12 h-12" />
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 mb-4 italic uppercase tracking-tighter">
+                          {t("sendMessageSuccess")}
+                        </h2>
+                        <p className="text-slate-500 mb-10 max-w-sm mx-auto">
+                          We've received your inquiry. One of our engineers will reach out within 24 hours.
+                        </p>
+                        <button 
+                          onClick={() => setSubmitted(false)}
+                          className="text-orange-600 font-bold hover:underline"
+                        >
+                          Send another message
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               </div>
             </div>
           </div>
         </section>
 
-          {/* Map Placeholder */}
-          <section className="h-[300px] sm:h-[400px] grayscale hover:grayscale-0 transition-all duration-700 bg-stone-200 overflow-hidden relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center p-4">
-                <MapPin className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600 mx-auto mb-4" />
-                <p className="font-bold text-slate-900 text-sm sm:text-base">{t("visitUs")}</p>
+        {/* Global Distribution & Map */}
+        <section className="relative h-[500px] md:h-[700px] bg-stone-200 overflow-hidden flex items-center justify-center">
+          <Image 
+            src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80" 
+            alt="Map Background"
+            fill
+            className="object-cover grayscale"
+          />
+          <div className="absolute inset-0 bg-slate-900/40" />
+          
+          <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10 w-full">
+            <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-12 items-center", isRtl && "md:grid-cols-reverse")}>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className={cn("bg-white/10 backdrop-blur-xl border border-white/20 p-8 md:p-12 rounded-[2rem] text-white max-w-xl", isRtl && "mr-auto")}
+              >
+                <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-orange-600/20">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <h3 className="text-3xl font-black mb-6 italic uppercase tracking-tighter">{t("location")}</h3>
+                <p className="text-lg text-slate-200 leading-relaxed mb-8">
+                  Industrial Zone - HQ<br />
+                  124 Manufacturing Way, Tech Park<br />
+                  Suite 500, Industrial District
+                </p>
+                <div className="flex gap-4">
+                  <button className="bg-white text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-orange-500 hover:text-white transition-all">
+                    Get Directions
+                  </button>
+                </div>
+              </motion.div>
+
+              <div className={cn("flex flex-col gap-6", isRtl && "items-end")}>
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-white p-6 rounded-2xl shadow-2xl flex items-center gap-6 max-w-md w-full"
+                >
+                  <div className="bg-orange-100 p-4 rounded-xl text-orange-600">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-slate-900 uppercase tracking-tighter italic">{t("globalDistribution")}</h4>
+                    <p className="text-sm text-slate-500">{t("globalDistributionDesc")}</p>
+                  </div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="bg-slate-900 p-6 rounded-2xl shadow-2xl flex items-center gap-6 max-w-md w-full text-white"
+                >
+                  <div className="bg-blue-600 p-4 rounded-xl text-white">
+                    <ShieldCheck className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-black uppercase tracking-tighter italic">Secure Shipping</h4>
+                    <p className="text-sm text-slate-400">Insured global freight via DHL & FedEx.</p>
+                  </div>
+                </motion.div>
               </div>
             </div>
-            <img 
-              src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80" 
-              alt="Map Background"
-              className="w-full h-full object-cover opacity-50"
-            />
-          </section>
+          </div>
+        </section>
       </main>
 
       <Footer />

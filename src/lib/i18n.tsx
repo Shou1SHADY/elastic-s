@@ -72,10 +72,23 @@ const translations: Record<Language, Record<string, string>> = {
     brandDesc: "From themed keychains to custom coasters. High-detail molds that bring your brand mascot to life.",
     industrialParts: "Industrial Components",
     industrialTitle: "Automotive & Electronic Insulation.",
-    industrialDesc: "High-grade silicone and rubber components. Mobile holders, cable organizers, and protective seals.",
-  },
-  ar: {
-    home: "الرئيسية",
+      industrialDesc: "High-grade silicone and rubber components. Mobile holders, cable organizers, and protective seals.",
+      phone: "Phone",
+      email: "Email",
+      hours: "Business Hours",
+      globalDistribution: "Global Distribution",
+      globalDistributionDesc: "Reliable international logistics with real-time tracking.",
+      responseRate: "Rapid Response",
+      responseRateDesc: "Inquiries answered within 24 business hours.",
+      technicalConsultation: "Technical Consultation",
+      technicalConsultationDesc: "Direct access to our material engineers for custom formulations.",
+      sendMessageSuccess: "Message Sent Successfully!",
+      sendMessageError: "Failed to send message. Please try again.",
+      requiredField: "Required field",
+    },
+    ar: {
+      home: "الرئيسية",
+
     products: "المنتجات",
     collections: "المجموعات",
     industries: "الصناعات",
@@ -134,9 +147,22 @@ const translations: Record<Language, Record<string, string>> = {
     brandDesc: "من سلاسل المفاتيح ذات الطابع الخاص إلى القواعد المخصصة. قوالب عالية التفاصيل تجلب تميمة علامتك التجارية إلى الحياة.",
     industrialParts: "المكونات الصناعية",
     industrialTitle: "عزل السيارات والإلكترونيات.",
-    industrialDesc: "مكونات سيليكون ومطاط عالية الجودة. حاملات هواتف، منظمات كابلات، وأختام واقية.",
-  },
-};
+      industrialDesc: "مكونات سيليكون ومطاط عالية الجودة. حاملات هواتف، منظمات كابلات، وأختام واقية.",
+      phone: "الهاتف",
+      email: "البريد الإلكتروني",
+      hours: "ساعات العمل",
+      globalDistribution: "توزيع عالمي",
+      globalDistributionDesc: "خدمات لوجستية دولية موثوقة مع تتبع في الوقت الفعلي.",
+      responseRate: "استجابة سريعة",
+      responseRateDesc: "يتم الرد على الاستفسارات في غضون 24 ساعة عمل.",
+      technicalConsultation: "استشارة فنية",
+      technicalConsultationDesc: "وصول مباشر لمهندسي المواد لدينا للصيغ المخصصة.",
+      sendMessageSuccess: "تم إرسال الرسالة بنجاح!",
+      sendMessageError: "فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+      requiredField: "حقل مطلوب",
+    },
+  };
+
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 

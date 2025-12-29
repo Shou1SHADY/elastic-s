@@ -81,7 +81,7 @@ export function HeroCarousel() {
   };
 
     return (
-      <header className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] overflow-hidden bg-stone-100 flex items-center">
+      <header className="relative w-full h-[85vh] sm:h-screen overflow-hidden bg-stone-100 flex items-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
@@ -110,49 +110,52 @@ export function HeroCarousel() {
               </div>
   
             <div className={cn(
-              "absolute bottom-0 w-full p-6 sm:p-10 md:p-16 text-white max-w-4xl z-10",
-              isRtl ? "right-0 text-right" : "left-0 text-left"
+              "absolute inset-0 flex flex-col justify-end p-6 sm:p-10 md:p-16 lg:p-24 text-white max-w-7xl mx-auto z-10",
+              isRtl ? "text-right" : "text-left"
             )}>
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="inline-block py-1 px-3 border border-white/30 rounded-full text-[10px] md:text-xs font-medium uppercase tracking-wider mb-3 md:mb-4 backdrop-blur-sm"
-              >
-                {slides[current].tag}
-              </motion.span>
-                <motion.h1
+              <div className="max-w-4xl">
+                <motion.span
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-3 md:mb-4 leading-[1.1] italic uppercase"
+                  transition={{ delay: 0.3 }}
+                  className="inline-block py-1 px-3 border border-white/30 rounded-full text-[10px] md:text-xs font-medium uppercase tracking-wider mb-4 md:mb-6 backdrop-blur-sm"
                 >
-                  {slides[current].title}
-                </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="text-sm sm:text-base md:text-xl text-stone-200 mb-6 md:mb-8 max-w-2xl font-light leading-relaxed"
-              >
-                {slides[current].description}
-              </motion.p>
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="bg-white text-slate-900 px-5 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-full text-xs sm:text-sm md:text-base font-semibold hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 shadow-xl"
-              >
-                {t("viewCollection")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-              </motion.button>
+                  {slides[current].tag}
+                </motion.span>
+                  <motion.h1
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4 md:mb-6 leading-[1.1] italic uppercase"
+                  >
+                    {slides[current].title}
+                  </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-base sm:text-lg md:text-2xl text-stone-200 mb-8 md:mb-12 max-w-2xl font-light leading-relaxed"
+                >
+                  {slides[current].description}
+                </motion.p>
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="bg-white text-slate-900 px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 rounded-full text-xs sm:text-sm md:text-base font-bold hover:bg-orange-500 hover:text-white transition-all flex items-center gap-2 shadow-2xl group"
+                >
+                  {t("viewCollection")} 
+                  <ArrowRight className={cn("w-5 h-5 transition-transform group-hover:translate-x-1", isRtl && "rotate-180 group-hover:-translate-x-1")} />
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>
   
         {/* Carousel Indicators with Progress */}
         <div className={cn(
-          "absolute bottom-6 sm:bottom-8 flex gap-2 z-20",
-          isRtl ? "left-6 sm:left-8" : "right-6 sm:right-8"
+          "absolute bottom-10 sm:bottom-12 flex gap-3 z-20",
+          isRtl ? "left-10 sm:left-12" : "right-10 sm:right-12"
         )}>
           {slides.map((_, index) => (
             <button
