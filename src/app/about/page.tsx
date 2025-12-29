@@ -16,7 +16,7 @@ export default function AboutPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-32 md:pt-48 pb-20 md:pb-32">
+        <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-32 md:pt-48 pb-20 md:pb-32">
           <div className="absolute inset-0 z-0 opacity-40">
             <img 
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" 
@@ -82,7 +82,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl"
+                className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl"
               >
                 <img 
                   src="https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&q=80" 
@@ -135,7 +135,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="md:order-1 relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl"
+                className="md:order-1 relative aspect-video rounded-2xl overflow-hidden shadow-2xl"
               >
                 <img 
                   src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80" 
