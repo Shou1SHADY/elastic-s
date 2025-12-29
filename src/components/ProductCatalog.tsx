@@ -27,8 +27,13 @@ export function ProductCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(8);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
   const { t, isRtl } = useLanguage();
+
+  useEffect(() => {
+    setVisibleCount(8);
+  }, [activeCategory]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -102,10 +107,10 @@ export function ProductCatalog() {
         ) : (
           <motion.div 
             layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10"
+            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-6 gap-y-6 md:gap-y-10"
           >
             <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product) => (
+              {filteredProducts.slice(0, visibleCount).map((product) => (
                 <motion.div
                   key={product.id}
                   layout
@@ -115,7 +120,7 @@ export function ProductCatalog() {
                   transition={{ duration: 0.3 }}
                   className="group cursor-pointer"
                 >
-                  <div className="relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 aspect-[4/3] border border-stone-100">
+                  <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 aspect-square md:aspect-[4/3] border border-stone-100">
                     <Image
                       src={imageErrors.has(product.id) ? fallbackImage : product.image}
                       alt={product.name}
@@ -126,16 +131,16 @@ export function ProductCatalog() {
                     />
                     <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/5 transition-colors" />
                     <div className={cn(
-                      "absolute top-3",
-                      isRtl ? "right-3" : "left-3"
+                      "absolute top-2 md:top-3",
+                      isRtl ? "right-2 md:right-3" : "left-2 md:left-3"
                     )}>
-                      <span className="bg-white/90 backdrop-blur text-slate-900 text-xs font-semibold px-2.5 py-1 rounded-md border border-stone-100 shadow-sm">
+                      <span className="bg-white/90 backdrop-blur text-slate-900 text-[10px] md:text-xs font-semibold px-2 py-0.5 md:px-2.5 md:py-1 rounded-md border border-stone-100 shadow-sm">
                         {product.categoryLabel}
                       </span>
                     </div>
                   </div>
-                  <div className={cn("mt-4 px-1", isRtl && "text-right")}>
-                    <h3 className="text-lg font-semibold text-slate-900 tracking-tight group-hover:text-orange-600 transition-colors">
+                  <div className={cn("mt-3 md:mt-4 px-1", isRtl && "text-right")}>
+                    <h3 className="text-sm md:text-lg font-semibold text-slate-900 tracking-tight group-hover:text-orange-600 transition-colors line-clamp-1">
                       {product.name}
                     </h3>
                   </div>
@@ -145,11 +150,22 @@ export function ProductCatalog() {
           </motion.div>
         )}
 
-      {/* "More" Indicator */}
-      <div className="mt-16 text-center">
-        <button className="inline-flex items-center gap-2 text-slate-900 font-semibold border-b border-slate-900 pb-1 hover:text-orange-600 hover:border-orange-600 transition-all">
-          {t("viewAllCategories")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-        </button>
+      {/* Show More / View All */}
+      <div className="mt-16 flex flex-col items-center gap-6">
+        {filteredProducts.length > visibleCount && (
+          <button 
+            onClick={() => setVisibleCount(prev => prev + 8)}
+            className="px-8 py-3 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-colors shadow-lg"
+          >
+            {t("showMore")}
+          </button>
+        )}
+        
+        <div className="text-center pt-4">
+          <button className="inline-flex items-center gap-2 text-slate-900 font-semibold border-b border-slate-900 pb-1 hover:text-orange-600 hover:border-orange-600 transition-all">
+            {t("viewAllCategories")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
+          </button>
+        </div>
       </div>
     </main>
   );
