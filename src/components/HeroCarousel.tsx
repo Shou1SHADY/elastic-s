@@ -81,7 +81,7 @@ export function HeroCarousel() {
   };
 
     return (
-      <header className="relative w-full h-[85vh] sm:h-screen overflow-hidden bg-stone-100 flex items-center">
+      <header className="relative w-full h-screen overflow-hidden bg-stone-100 flex items-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
@@ -110,7 +110,7 @@ export function HeroCarousel() {
               </div>
   
             <div className={cn(
-              "absolute inset-0 flex flex-col justify-end pt-32 pb-12 sm:pt-40 sm:pb-16 md:pt-48 md:pb-20 lg:pt-56 lg:pb-24 px-6 sm:px-10 md:px-16 lg:px-24 text-white max-w-7xl mx-auto z-10",
+              "absolute inset-0 flex flex-col justify-end pt-48 pb-12 sm:pt-56 sm:pb-16 md:pt-64 md:pb-20 lg:pt-72 lg:pb-24 px-6 sm:px-10 md:px-16 lg:px-24 text-white max-w-7xl mx-auto z-10",
               isRtl ? "text-right" : "text-left"
             )}>
               <div className="max-w-4xl">
@@ -126,7 +126,7 @@ export function HeroCarousel() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4 md:mb-6 leading-[1.1] italic uppercase"
+                    className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4 md:mb-6 leading-[1.1] italic uppercase"
                   >
                     {slides[current].title}
                   </motion.h1>
@@ -134,7 +134,7 @@ export function HeroCarousel() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="text-base sm:text-lg md:text-2xl text-stone-200 mb-8 md:mb-12 max-w-2xl font-light leading-relaxed"
+                  className="text-sm sm:text-lg md:text-2xl text-stone-200 mb-8 md:mb-12 max-w-2xl font-light leading-relaxed"
                 >
                   {slides[current].description}
                 </motion.p>

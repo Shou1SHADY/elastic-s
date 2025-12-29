@@ -58,7 +58,7 @@ export default function ContactPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative pt-24 pb-16 md:pt-36 md:pb-24 bg-slate-900 overflow-hidden">
+        <section className="relative pt-28 pb-12 md:pt-40 md:pb-20 bg-slate-900 overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
@@ -69,7 +69,7 @@ export default function ContactPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-widest mb-4 md:mb-6 backdrop-blur-md"
               >
                 <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                 Global Manufacturing HQ
@@ -77,7 +77,7 @@ export default function ContactPage() {
               <motion.h1 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 italic uppercase tracking-tighter leading-[0.9]"
+                className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 italic uppercase tracking-tighter leading-[0.9]"
               >
                 {t("contactTitle")}
               </motion.h1>
@@ -85,7 +85,7 @@ export default function ContactPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="text-xl md:text-2xl text-slate-300 font-light max-w-2xl mx-auto leading-relaxed"
+                className="text-lg md:text-xl text-slate-300 font-light max-w-2xl mx-auto leading-relaxed"
               >
                 {t("contactSubtitle")}
               </motion.p>
@@ -104,30 +104,30 @@ export default function ContactPage() {
                   <h2 className={cn("text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8", isRtl && "text-right")}>
                     Connect with us
                   </h2>
-                  {contactInfo.map((info, i) => (
-                    <motion.div 
-                      key={i}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      viewport={{ once: true }}
-                      className={cn("group flex gap-5 p-6 bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all duration-500", isRtl && "flex-row-reverse text-right")}
-                    >
-                      <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-500", info.color)}>
-                        <info.icon className="w-6 h-6" />
-                      </div>
-                      <div className="flex flex-col justify-center min-w-0">
-                        <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">{info.label}</p>
-                        {info.href ? (
-                          <a href={info.href} className="text-lg text-slate-900 font-bold hover:text-orange-600 transition-colors break-all">
-                            {info.value}
-                          </a>
-                        ) : (
-                          <p className="text-lg text-slate-900 font-bold break-all">{info.value}</p>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
+                    {contactInfo.map((info, i) => (
+                      <motion.div 
+                        key={i}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        viewport={{ once: true }}
+                        className={cn("group flex gap-5 p-6 bg-white rounded-2xl border border-stone-200 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all duration-500 min-w-0", isRtl && "flex-row-reverse text-right")}
+                      >
+                        <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-500", info.color)}>
+                          <info.icon className="w-6 h-6" />
+                        </div>
+                        <div className="flex flex-col justify-center min-w-0">
+                          <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">{info.label}</p>
+                          {info.href ? (
+                            <a href={info.href} className="text-lg text-slate-900 font-bold hover:text-orange-600 transition-colors break-all">
+                              {info.value}
+                            </a>
+                          ) : (
+                            <p className="text-lg text-slate-900 font-bold break-all">{info.value}</p>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
                 </div>
 
                 {/* Trust Section */}
