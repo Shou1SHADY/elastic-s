@@ -73,10 +73,14 @@ export function ProductCatalog() {
             {t("catalogDescription")}
           </p>
         </div>
-        <div className="hidden md:block">
-          <button className="text-slate-500 hover:text-slate-900 font-medium flex items-center gap-2 text-sm transition-colors">
+        <div className="flex items-center gap-4">
+          <a 
+            href="/catalog.pdf" 
+            download="Orchids_Catalog.pdf"
+            className="text-slate-500 hover:text-slate-900 font-medium flex items-center gap-2 text-sm transition-colors"
+          >
             {t("downloadCatalog")} <Download className="w-4 h-4" />
-          </button>
+          </a>
         </div>
       </div>
 
@@ -195,14 +199,8 @@ export function ProductCatalog() {
                 <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
               </button>
             </div>
-          )}
-        
-        <div className="text-center pt-4">
-          <button className="inline-flex items-center gap-2 text-slate-900 font-semibold border-b border-slate-900 pb-1 hover:text-orange-600 hover:border-orange-600 transition-all">
-            {t("viewAllCategories")} <ArrowRight className={cn("w-4 h-4", isRtl && "rotate-180")} />
-          </button>
-        </div>
-      </div>
-    </main>
+            )}
+          </div>
+        </main>
   );
 }
