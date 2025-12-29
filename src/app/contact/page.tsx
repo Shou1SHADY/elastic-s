@@ -89,12 +89,12 @@ export default function ContactPage() {
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
           </div>
           
-              <div className="text-center max-w-4xl mx-auto">
-                <motion.h1 
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 italic uppercase tracking-tighter leading-[0.9]"
-                >
+            <div className="text-center max-w-4xl mx-auto">
+              <motion.h1 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 italic uppercase tracking-tighter leading-[0.9]"
+              >
                 {t("contactTitle")}
               </motion.h1>
               <motion.p 
@@ -106,8 +106,7 @@ export default function ContactPage() {
                 {t("contactSubtitle")}
               </motion.p>
             </div>
-          </div>
-        </section>
+          </section>
 
         <section className="py-20 md:py-32 bg-stone-50">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
