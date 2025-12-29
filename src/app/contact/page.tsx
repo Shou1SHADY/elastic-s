@@ -34,7 +34,7 @@ export default function ContactPage() {
       <Navbar />
       
       <main className="flex-grow">
-        <section className="py-20 bg-stone-50">
+        <section className="pt-32 pb-20 md:pt-40 md:pb-24 bg-stone-50">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <motion.h1 

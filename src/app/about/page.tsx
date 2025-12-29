@@ -15,7 +15,7 @@ export default function AboutPage() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white">
+        <section className="relative h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900 text-white pt-20 md:pt-28">
           <div className="absolute inset-0 z-0 opacity-40">
             <img 
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" 
