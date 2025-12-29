@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, ArrowRight, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -22,7 +23,7 @@ interface Category {
 
 const fallbackImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop";
 
-export function ProductCatalog() {
+function ProductCatalogContent() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -31,6 +32,30 @@ export function ProductCatalog() {
   const itemsPerPage = 8;
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
   const { t, isRtl } = useLanguage();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      setActiveCategory(categoryParam);
+      // Wait a bit for the page to be ready if it's initial load
+      setTimeout(() => {
+        document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }, [searchParams]);
+
+  const handleCategoryChange = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    const params = new URLSearchParams(searchParams.toString());
+    if (categoryId === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", categoryId);
+    }
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -90,7 +115,7 @@ export function ProductCatalog() {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
+              onClick={() => handleCategoryChange(cat.id)}
               className={cn(
                 "whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all flex-shrink-0",
                 activeCategory === cat.id
@@ -200,5 +225,13 @@ export function ProductCatalog() {
         )}
       </div>
     </main>
+  );
+}
+
+export function ProductCatalog() {
+  return (
+    <Suspense fallback={<div className="min-h-screen animate-pulse bg-stone-50" />}>
+      <ProductCatalogContent />
+    </Suspense>
   );
 }
