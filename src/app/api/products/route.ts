@@ -80,40 +80,18 @@ export async function GET() {
     try {
       const allProducts: Product[] = [];
 
-      // Fetch all objects in the bucket once
-      const { data: allObjects, error: listError } = await supabase.storage.from(BUCKET_NAME).list('', {
-        recursive: true,
-        limit: 100
-      });
-
-      // Try listing a specific folder if root listing is empty
-      let foldersToTry = ["army", "police", "coasters"];
-      let additionalObjects: any[] = [];
-      
-      if (!allObjects || allObjects.length === 0) {
-        for (const folder of foldersToTry) {
-          const { data: folderFiles } = await supabase.storage.from(BUCKET_NAME).list(folder);
-          if (folderFiles) {
-            additionalObjects.push(...folderFiles.map(f => ({ ...f, name: `${folder}/${f.name}` })));
-          }
-        }
-      }
-      
-      const combinedObjects = [...(allObjects || []), ...additionalObjects];
-
-      if (listError) {
-        console.error("Error listing bucket:", listError);
-      }
-
-      const hasFiles = combinedObjects && combinedObjects.length > 0;
-
+      // Fetch files for each category explicitly
       const categoryPromises = CATEGORIES.map(async (category) => {
         try {
-          // Check if there are any files in this category folder
-          const categoryFiles = combinedObjects.filter(obj => obj.name.startsWith(`${category}/`)) || [];
+          const { data: categoryFiles, error: listError } = await supabase.storage
+            .from(BUCKET_NAME)
+            .list(category, {
+              limit: 20,
+              sortBy: { column: 'name', order: 'asc' }
+            });
 
-          if (categoryFiles.length === 0) {
-            // Use Unsplash fallbacks if no files found in category
+          if (listError || !categoryFiles || categoryFiles.length === 0) {
+            console.log(`No files found for category ${category}, using fallbacks`);
             return UNSPLASH_FALLBACKS[category].map((url, index) => ({
               id: `${category}-unsplash-${index}`,
               name: `${CATEGORY_LABELS[category]} #${index + 1}`,
@@ -124,13 +102,13 @@ export async function GET() {
           }
 
           return categoryFiles
-            .filter((file) => file.name !== ".emptyFolderPlaceholder" && !file.metadata?.mimetype?.startsWith("directory"))
+            .filter((file) => file.name !== ".emptyFolderPlaceholder")
             .map((file, index) => ({
               id: `${category}-${index}-${file.id || file.name}`,
               name: `${CATEGORY_LABELS[category]} #${index + 1}`,
               category,
               categoryLabel: CATEGORY_LABELS[category],
-              image: `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${file.name}`,
+              image: `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${category}/${file.name}`,
             }));
         } catch (err) {
           console.error(`Failed to process category ${category}:`, err);
@@ -138,16 +116,16 @@ export async function GET() {
         }
       });
 
-    const results = await Promise.all(categoryPromises);
-    results.forEach((categoryProducts) => {
-      allProducts.push(...categoryProducts);
-    });
+      const results = await Promise.all(categoryPromises);
+      results.forEach((categoryProducts) => {
+        allProducts.push(...categoryProducts);
+      });
 
-    return NextResponse.json({
-      products: allProducts,
-      categories: CATEGORIES.map((id) => ({ id, label: CATEGORY_LABELS[id] })),
-    });
-  } catch (error) {
+      return NextResponse.json({
+        products: allProducts,
+        categories: CATEGORIES.map((id) => ({ id, label: CATEGORY_LABELS[id] })),
+      });
+    } catch (error) {
     console.error("Error in products API:", error);
     return NextResponse.json(
       { error: "Internal server error", products: [], categories: [] },
