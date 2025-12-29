@@ -91,18 +91,23 @@ export function HeroCarousel() {
             transition={{ duration: 1 }}
             className="absolute inset-0 w-full h-full"
           >
-            <div className="absolute inset-0 z-0">
-              <Image
-                  src={getImageSrc(current)}
-                  alt={slides[current].title}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                  priority
-                  onError={() => handleImageError(current)}
-                />
-              <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/95 via-slate-900/20 to-transparent"></div>
-            </div>
+              <div className="absolute inset-0 z-0 overflow-hidden">
+                <motion.div
+                  animate={{ scale: [1, 1.1] }}
+                  transition={{ duration: SLIDE_DURATION / 1000, ease: "linear" }}
+                  className="w-full h-full"
+                >
+                  <Image
+                    src={getImageSrc(current)}
+                    alt={slides[current].title}
+                    fill
+                    className="object-cover"
+                    priority
+                    onError={() => handleImageError(current)}
+                  />
+                </motion.div>
+                <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/95 via-slate-900/20 to-transparent"></div>
+              </div>
   
             <div className={cn(
               "absolute bottom-0 w-full p-6 md:p-16 text-white max-w-4xl z-10",

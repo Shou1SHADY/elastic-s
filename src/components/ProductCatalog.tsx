@@ -100,12 +100,18 @@ export function ProductCatalog() {
         </div>
       </div>
 
-        {/* Product Grid */}
-        {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
-          </div>
-        ) : (
+          {/* Product Grid */}
+          {loading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-stone-100 rounded-xl md:rounded-2xl aspect-[4/5] md:aspect-[4/3] mb-4" />
+                  <div className="h-4 bg-stone-100 rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-stone-100 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : (
             <motion.div 
               layout
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8"
@@ -121,16 +127,16 @@ export function ProductCatalog() {
                     transition={{ duration: 0.4 }}
                     className="group"
                   >
-                  <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
-                    <Image
-                      src={imageErrors.has(product.id) ? fallbackImage : product.image}
-                      alt={product.name}
-                      fill
-                      unoptimized
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      onError={() => handleImageError(product.id)}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-[4/5] md:aspect-[4/3] border border-stone-100">
+                      <Image
+                        src={imageErrors.has(product.id) ? fallbackImage : product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={() => handleImageError(product.id)}
+                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <div className={cn(
                       "absolute top-2 md:top-4",
                       isRtl ? "right-2 md:right-4" : "left-2 md:left-4"

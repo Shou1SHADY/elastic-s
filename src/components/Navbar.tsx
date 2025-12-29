@@ -42,20 +42,17 @@ export function Navbar() {
             </span>
           </Link>
 
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
-              <Link href="/" className="text-slate-900 hover:text-orange-600 transition-colors">
-                {t("home")}
-              </Link>
-              <a href="#products" className="hover:text-slate-900 transition-colors">
-                {t("products")}
-              </a>
-              <a href="#about" className="hover:text-slate-900 transition-colors">
-                {t("about")}
-              </a>
-              <a href="#contact" className="hover:text-slate-900 transition-colors">
-                {t("contact")}
-              </a>
-            </div>
+              <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
+                <Link href="/" className="text-slate-900 hover:text-orange-600 transition-colors">
+                  {t("home")}
+                </Link>
+                <a href="#about" className="hover:text-slate-900 transition-colors">
+                  {t("about")}
+                </a>
+                <a href="#contact" className="hover:text-slate-900 transition-colors">
+                  {t("contact")}
+                </a>
+              </div>
 
           {/* Actions */}
           <div className="flex items-center gap-4">
@@ -90,43 +87,36 @@ export function Navbar() {
           isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         )}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-8 p-6 pt-24 overflow-y-auto">
-          <Link 
-            href="/" 
-            className="text-2xl font-semibold text-slate-900"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            {t("home")}
-          </Link>
-          <a 
-            href="#products" 
-            className="text-2xl font-semibold text-slate-900"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            {t("products")}
-          </a>
-            <a 
-              href="#about" 
+          <div className="flex flex-col items-center justify-center h-full gap-8 p-6 pt-24 overflow-y-auto">
+            <Link 
+              href="/" 
               className="text-2xl font-semibold text-slate-900"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("about")}
-            </a>
-            <a 
-              href="#contact" 
-              className="text-2xl font-semibold text-slate-900"
+              {t("home")}
+            </Link>
+              <a 
+                href="#about" 
+                className="text-2xl font-semibold text-slate-900"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t("about")}
+              </a>
+              <a 
+                href="#contact" 
+                className="text-2xl font-semibold text-slate-900"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t("contact")}
+              </a>
+            <a
+              href="#contact"
+              className="mt-4 bg-slate-900 text-white px-8 py-4 rounded-full text-lg font-medium w-full text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t("contact")}
+              {t("requestQuotation")}
             </a>
-          <a
-            href="#contact"
-            className="mt-4 bg-slate-900 text-white px-8 py-4 rounded-full text-lg font-medium w-full text-center"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            {t("requestQuotation")}
-          </a>
-        </div>
+          </div>
       </div>
     </>
   );
