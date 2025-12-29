@@ -44,47 +44,47 @@ export const Navbar: FC = () => {
     }
   }, [scrollDirection]);
 
-  useEffect(() => {
-    const tl = gsap.timeline();
-
-    if (isShrunken) {
-      tl.to(headerRef.current, {
-        width: 56,
-        height: 56,
-        borderRadius: "1rem",
-        duration: 0.4,
-        ease: "power3.inOut",
-      })
-        .to(
-          [navRef.current, langRef.current, logoRef.current],
-          { opacity: 0, duration: 0.2, ease: "power3.inOut" },
-          "-=0.4"
-        )
-        .to(
-          iconRef.current,
-          { opacity: 1, duration: 0.2, ease: "power3.inOut" },
-          "-=0.2"
-        );
-    } else {
-      tl.to(headerRef.current, {
-        width: "auto",
-        height: 56,
-        borderRadius: "9999px",
-        duration: 0.4,
-        ease: "power3.inOut",
-      })
-        .to(
-          iconRef.current,
-          { opacity: 0, duration: 0.2, ease: "power3.inOut" },
-          "-=0.4"
-        )
-        .to(
-          [navRef.current, langRef.current, logoRef.current],
-          { opacity: 1, duration: 0.3, ease: "power3.inOut" },
-          "-=0.3"
-        );
-    }
-  }, [isShrunken]);
+    useEffect(() => {
+      const tl = gsap.timeline();
+  
+      if (isShrunken) {
+        tl.to(headerRef.current, {
+          width: 56,
+          height: 56,
+          borderRadius: "1rem",
+          duration: 0.4,
+          ease: "power3.inOut",
+        })
+          .to(
+            [navRef.current, langRef.current, logoRef.current],
+            { opacity: 0, duration: 0.2, ease: "power3.inOut" },
+            "-=0.4"
+          )
+          .to(
+            iconRef.current,
+            { opacity: 1, duration: 0.2, ease: "power3.inOut" },
+            "-=0.2"
+          );
+      } else {
+        tl.to(headerRef.current, {
+          width: "auto",
+          height: 80,
+          borderRadius: "9999px",
+          duration: 0.4,
+          ease: "power3.inOut",
+        })
+          .to(
+            iconRef.current,
+            { opacity: 0, duration: 0.2, ease: "power3.inOut" },
+            "-=0.4"
+          )
+          .to(
+            [navRef.current, langRef.current, logoRef.current],
+            { opacity: 1, duration: 0.3, ease: "power3.inOut" },
+            "-=0.3"
+          );
+      }
+    }, [isShrunken]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -120,7 +120,7 @@ export const Navbar: FC = () => {
       >
         <div
           ref={headerRef}
-          className="flex h-14 items-center justify-center border border-stone-200/50 bg-white/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden"
+          className="flex h-20 items-center justify-center border border-stone-200/50 bg-white/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden"
         >
           <div ref={iconRef} className="absolute opacity-0 text-slate-900">
             <div ref={rotatingIconRef}>
@@ -131,7 +131,7 @@ export const Navbar: FC = () => {
               href="/"
               className={cn("flex-shrink-0 transition-all", isRtl ? "ml-4 sm:ml-6" : "mr-4 sm:mr-6")}
             >
-              <div ref={logoRef} className="scale-90 sm:scale-100">
+              <div ref={logoRef} className="scale-110 sm:scale-125">
                 <Logo />
               </div>
             </Link>
@@ -146,7 +146,7 @@ export const Navbar: FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors group"
+                className="relative text-sm font-medium text-slate-900 hover:text-orange-600 transition-colors group"
               >
                 {t(link.labelKey)}
                 <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-orange-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out"></span>
