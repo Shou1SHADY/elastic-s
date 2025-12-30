@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, ArrowRight, Loader2 } from "lucide-react";
+import { Download, ArrowRight, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
@@ -31,6 +31,7 @@ function ProductCatalogContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { t, isRtl } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -154,7 +155,10 @@ function ProductCatalogContent() {
                 transition={{ duration: 0.3 }}
                 className="group w-full min-w-0"
               >
-                <div className="relative bg-white rounded-md md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-square border border-stone-100 w-full">
+                <div
+                  className="relative bg-white rounded-md md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 aspect-square border border-stone-100 w-full "
+                  onClick={() => setSelectedProduct(product)}
+                >
                   <Image
                     src={imageErrors.has(product.id) ? fallbackImage : product.image}
                     alt={product.name}
@@ -168,21 +172,77 @@ function ProductCatalogContent() {
                     "absolute top-2 md:top-4",
                     isRtl ? "right-2 md:right-4" : "left-2 md:left-4"
                   )}>
-                    <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[8px] md:text-xs font-bold px-1.5 py-0.5 rounded shadow-sm border border-stone-100">
-                      {product.categoryLabel}
+                    <span className="bg-white/95 backdrop-blur-sm text-slate-900 text-[8px] md:text-xs font-bold px-1.5 py-1 rounded shadow-sm border border-stone-100 flex items-center gap-1">
+                      <span className="opacity-60">{product.categoryLabel}</span>
+                      <span className="text-orange-600 font-extrabold">#{product.name.split('#')[1] || ''}</span>
                     </span>
                   </div>
-                </div>
-                <div className={cn("mt-2 md:mt-5 px-1", isRtl && "text-right")}>
-                  <h3 className="text-xs md:text-lg font-bold text-slate-900 leading-tight group-hover:text-orange-600 transition-colors line-clamp-1">
-                    {product.name}
-                  </h3>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
       )}
+
+      {/* Product Image Modal */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProduct(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-slate-900/90 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-4xl aspect-square md:aspect-[4/3] bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl overflow-y-auto"
+            >
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="absolute top-4 right-4 z-10 p-2 bg-white/90 backdrop-blur-sm text-slate-900 rounded-full hover:bg-orange-500 hover:text-white transition-all shadow-lg"
+              >
+                <X className="w-5 h-5 md:w-6 md:h-6" />
+              </button>
+
+              <div className="flex flex-col h-full">
+                <div className="relative flex-1 w-full min-h-[300px] bg-stone-50">
+                  <Image
+                    src={imageErrors.has(selectedProduct.id) ? fallbackImage : selectedProduct.image}
+                    alt={selectedProduct.name}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+
+                <div className={cn(
+                  "p-6 md:p-10 bg-white border-t border-stone-100",
+                  isRtl && "text-right"
+                )}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs md:text-sm font-bold">
+                      {selectedProduct.categoryLabel}
+                    </span>
+                    <span className="text-slate-400 font-medium text-sm md:text-base">
+                      #{selectedProduct.name.split('#')[1] || ''}
+                    </span>
+                  </div>
+                  <h3 className="text-xl md:text-3xl font-black text-slate-900 mb-2">
+                    {selectedProduct.name.split('#')[0].trim()}
+                  </h3>
+                  <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-2xl">
+                    {t("catalogDescription")}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Pagination */}
       <div className="mt-16 flex flex-col items-center gap-8">
