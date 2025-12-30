@@ -99,7 +99,7 @@ export async function GET() {
         const { data: categoryFiles, error: listError } = await supabase.storage
           .from(BUCKET_NAME)
           .list(category, {
-            limit: 20,
+            limit: 100,
             sortBy: { column: 'name', order: 'asc' }
           });
 
