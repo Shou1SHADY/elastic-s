@@ -15,6 +15,7 @@ const CATEGORIES = [
   "lighter",
   "mobile-holder",
   "pen-accessories",
+  "keychains",
 ] as const;
 
 type Category = (typeof CATEGORIES)[number];
@@ -30,6 +31,7 @@ const CATEGORY_LABELS: Record<Category, string> = {
   lighter: "Lighter Covers",
   "mobile-holder": "Mobile Holders",
   "pen-accessories": "Pen Accessories",
+  keychains: "Keychains",
 };
 
 interface Product {
@@ -59,6 +61,7 @@ const UNSPLASH_FALLBACKS: Record<Category, string[]> = {
   lighter: ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
   "mobile-holder": ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
   "pen-accessories": ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
+  keychains: ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800"],
 };
 
 async function checkFileExists(url: string) {
