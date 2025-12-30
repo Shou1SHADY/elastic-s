@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, ArrowRight, Loader2, X } from "lucide-react";
+import { Download, ArrowRight, Loader2, X, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
@@ -35,6 +35,34 @@ function ProductCatalogContent() {
   const { t, isRtl } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // Scroll indicators state
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showLeftBlur, setShowLeftBlur] = useState(false);
+  const [showRightBlur, setShowRightBlur] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setShowLeftBlur(scrollLeft > 10);
+      setShowRightBlur(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener('scroll', checkScroll);
+      // Initial check
+      checkScroll();
+      // Recalculate on window resize
+      window.addEventListener('resize', checkScroll);
+      return () => {
+        el.removeEventListener('scroll', checkScroll);
+        window.removeEventListener('resize', checkScroll);
+      };
+    }
+  }, [categories]);
 
   useEffect(() => {
     const categoryParam = searchParams.get("category");
@@ -111,23 +139,38 @@ function ProductCatalogContent() {
       </div>
 
       {/* Sticky Filter Bar */}
-      <div className="sticky top-[72px] sm:top-20 md:top-24 z-30 py-3 md:py-4 bg-white/95 backdrop-blur-md border-b border-stone-100 mb-8 w-full overflow-hidden">
-        <div className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide pb-1 px-4 md:px-0">
+      <div className="sticky top-[72px] sm:top-20 md:top-24 z-30 py-4 md:py-6 bg-stone-50/90 backdrop-blur-xl border-y border-stone-200/60 mb-8 w-full overflow-hidden shadow-sm relative group/filter">
+        {/* Left Scroll Indicator */}
+        <div className={cn(
+          "absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-stone-50/90 to-transparent z-10 pointer-events-none transition-opacity duration-300",
+          showLeftBlur ? "opacity-100" : "opacity-0"
+        )} />
+
+        <div
+          ref={scrollRef}
+          className="flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide pb-1 px-4 md:px-8 relative"
+        >
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => handleCategoryChange(cat.id)}
               className={cn(
-                "whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-semibold transition-all flex-shrink-0",
+                "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex-shrink-0",
                 activeCategory === cat.id
-                  ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 scale-105"
-                  : "bg-stone-50 text-slate-600 hover:bg-stone-100 border border-transparent"
+                  ? "bg-slate-900 text-white shadow-xl shadow-slate-900/20 scale-105"
+                  : "bg-white text-slate-600 hover:bg-white hover:text-slate-900 border border-stone-200 shadow-sm"
               )}
             >
               {cat.label}
             </button>
           ))}
         </div>
+
+        {/* Right Scroll Indicator */}
+        <div className={cn(
+          "absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-stone-50/90 to-transparent z-10 pointer-events-none transition-opacity duration-300",
+          showRightBlur ? "opacity-100" : "opacity-0"
+        )} />
       </div>
 
       {/* Product Grid */}

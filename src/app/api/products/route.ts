@@ -64,9 +64,19 @@ const UNSPLASH_FALLBACKS: Record<Category, string[]> = {
 async function checkFileExists(url: string) {
   if (!url || url.includes("undefined")) return false;
   try {
-    const res = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(2000) });
-    return res.ok;
-  } catch {
+    // Try HEAD first for performance
+    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+    if (res.ok) return true;
+
+    // Some storages might fail HEAD but allow GET
+    if (res.status === 400 || res.status === 405) {
+      const getRes = await fetch(url, { method: "GET", cache: "no-store", signal: AbortSignal.timeout(2000) });
+      return getRes.ok;
+    }
+
+    return false;
+  } catch (error) {
+    console.error(`Error checking file existence for ${url}:`, error);
     return false;
   }
 }
@@ -77,55 +87,81 @@ export async function GET() {
     return NextResponse.json({ error: "Configuration error", products: [], categories: [] }, { status: 500 });
   }
 
-    try {
-      const allProducts: Product[] = [];
+  try {
+    const allProducts: Product[] = [];
 
-      // Fetch files for each category explicitly
-      const categoryPromises = CATEGORIES.map(async (category) => {
-        try {
-          const { data: categoryFiles, error: listError } = await supabase.storage
-            .from(BUCKET_NAME)
-            .list(category, {
-              limit: 20,
-              sortBy: { column: 'name', order: 'asc' }
-            });
+    // Fetch files for each category explicitly
+    const categoryPromises = CATEGORIES.map(async (category) => {
+      try {
+        const { data: categoryFiles, error: listError } = await supabase.storage
+          .from(BUCKET_NAME)
+          .list(category, {
+            limit: 20,
+            sortBy: { column: 'name', order: 'asc' }
+          });
 
-          if (listError || !categoryFiles || categoryFiles.length === 0) {
-            console.log(`No files found for category ${category}, using fallbacks`);
-            return UNSPLASH_FALLBACKS[category].map((url, index) => ({
-              id: `${category}-unsplash-${index}`,
-              name: `${CATEGORY_LABELS[category]} #${index + 1}`,
-              category,
-              categoryLabel: CATEGORY_LABELS[category],
-              image: url,
-            }));
-          }
+        if (listError || !categoryFiles || categoryFiles.length === 0) {
+          console.log(`No files found for category ${category}, using fallbacks`);
+          return UNSPLASH_FALLBACKS[category].map((url, index) => ({
+            id: `${category}-unsplash-${index}`,
+            name: `${CATEGORY_LABELS[category]} #${index + 1}`,
+            category,
+            categoryLabel: CATEGORY_LABELS[category],
+            image: url,
+          }));
+        }
 
-          return categoryFiles
-            .filter((file) => file.name !== ".emptyFolderPlaceholder")
-            .map((file, index) => ({
+        const productPromises = categoryFiles
+          .filter((file) => file.name !== ".emptyFolderPlaceholder")
+          .map(async (file, index): Promise<Product | null> => {
+            const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${category}/${file.name}`;
+            // Verify if the image actually exists to avoid 400/404 errors
+            const exists = await checkFileExists(imageUrl);
+
+            if (!exists) {
+              console.log(`Image not found or inaccessible: ${imageUrl}`);
+              return null;
+            }
+
+            return {
               id: `${category}-${index}-${file.id || file.name}`,
               name: `${CATEGORY_LABELS[category]} #${index + 1}`,
-              category,
+              category: category as string,
               categoryLabel: CATEGORY_LABELS[category],
-              image: `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${category}/${file.name}`,
-            }));
-        } catch (err) {
-          console.error(`Failed to process category ${category}:`, err);
-          return [];
+              image: imageUrl,
+            };
+          });
+
+        const categoryProducts = (await Promise.all(productPromises)).filter((p): p is Product => p !== null);
+
+        // If no valid products found after checking files, use fallbacks
+        if (categoryProducts.length === 0) {
+          return UNSPLASH_FALLBACKS[category].map((url, index) => ({
+            id: `${category}-unsplash-${index}`,
+            name: `${CATEGORY_LABELS[category]} #${index + 1}`,
+            category: category as string,
+            categoryLabel: CATEGORY_LABELS[category],
+            image: url,
+          }));
         }
-      });
 
-      const results = await Promise.all(categoryPromises);
-      results.forEach((categoryProducts) => {
-        allProducts.push(...categoryProducts);
-      });
+        return categoryProducts;
+      } catch (err) {
+        console.error(`Failed to process category ${category}:`, err);
+        return [];
+      }
+    });
 
-      return NextResponse.json({
-        products: allProducts,
-        categories: CATEGORIES.map((id) => ({ id, label: CATEGORY_LABELS[id] })),
-      });
-    } catch (error) {
+    const results = await Promise.all(categoryPromises);
+    results.forEach((categoryProducts) => {
+      allProducts.push(...categoryProducts);
+    });
+
+    return NextResponse.json({
+      products: allProducts,
+      categories: CATEGORIES.map((id) => ({ id, label: CATEGORY_LABELS[id] })),
+    });
+  } catch (error) {
     console.error("Error in products API:", error);
     return NextResponse.json(
       { error: "Internal server error", products: [], categories: [] },

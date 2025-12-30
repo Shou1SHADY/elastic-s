@@ -34,13 +34,13 @@ export function HeroCarousel() {
       tag: t("brandMerch"),
       title: t("brandTitle"),
       description: t("brandDesc"),
-      image: `${BUCKET_URL}/coasters/1.jpeg`,
+      image: `${BUCKET_URL}/coasters/ABU42852-23_tn.webp`,
     },
     {
       tag: t("industrialParts"),
       title: t("industrialTitle"),
       description: t("industrialDesc"),
-      image: `${BUCKET_URL}/police/1.jpeg`,
+      image: `${BUCKET_URL}/police/ABU44238-9_tn.webp`,
     },
   ], [t]);
 
