@@ -28,6 +28,10 @@ interface Product {
   image: string;
 }
 
+// Simple in-memory cache
+let cachedData: { products: Product[], categories: any[], timestamp: number } | null = null;
+const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+
 async function isAuthorized() {
   const cookieStore = await cookies();
   return cookieStore.get("admin_session")?.value === "true";
@@ -41,7 +45,7 @@ async function getCategories() {
       return JSON.parse(text);
     }
   } catch (e) {
-    console.error("Error reading categories metadata:", e);
+    // Silently fail and use defaults
   }
   return INITIAL_CATEGORIES;
 }
@@ -51,27 +55,22 @@ async function saveCategories(categories: { id: string; label: string }[]) {
   const { error } = await supabase.storage.from(BUCKET_NAME).upload(METADATA_PATH, blob, {
     upsert: true,
   });
+  if (!error) cachedData = null; // Invalidate cache
   return !error;
-}
-
-async function checkFileExists(url: string) {
-  if (!url || url.includes("undefined")) return false;
-  try {
-    const res = await fetch(url, { method: "HEAD", cache: "no-store" });
-    if (res.ok) return true;
-    if (res.status === 400 || res.status === 405) {
-      const getRes = await fetch(url, { method: "GET", cache: "no-store", signal: AbortSignal.timeout(2000) });
-      return getRes.ok;
-    }
-    return false;
-  } catch (error) {
-    return false;
-  }
 }
 
 export async function GET() {
   if (!SUPABASE_URL) {
     return NextResponse.json({ error: "Configuration error", products: [], categories: [] }, { status: 500 });
+  }
+
+  const now = Date.now();
+  if (cachedData && now - cachedData.timestamp < CACHE_TTL) {
+    return NextResponse.json({
+      products: cachedData.products,
+      categories: cachedData.categories,
+      cached: true
+    });
   }
 
   try {
@@ -91,13 +90,10 @@ export async function GET() {
           return [];
         }
 
-        const productPromises = categoryFiles
-          .filter((file) => file.name !== ".emptyFolderPlaceholder")
-          .map(async (file, index): Promise<Product | null> => {
+        return categoryFiles
+          .filter((file) => file.name !== ".emptyFolderPlaceholder" && !file.name.includes(".json"))
+          .map((file, index): Product => {
             const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${cat.id}/${file.name}`;
-            const exists = await checkFileExists(imageUrl);
-            if (!exists) return null;
-
             return {
               id: `${cat.id}-${index}-${file.id || file.name}`,
               name: `${cat.label} #${index + 1}`,
@@ -106,8 +102,6 @@ export async function GET() {
               image: imageUrl,
             };
           });
-
-        return (await Promise.all(productPromises)).filter((p): p is Product => p !== null);
       } catch (err) {
         return [];
       }
@@ -118,12 +112,17 @@ export async function GET() {
       allProducts.push(...categoryProducts);
     });
 
+    cachedData = {
+      products: allProducts,
+      categories: categories,
+      timestamp: now
+    };
+
     return NextResponse.json({
       products: allProducts,
       categories: categories,
     });
   } catch (error) {
-    console.error("Error in products API:", error);
     return NextResponse.json(
       { error: "Internal server error", products: [], categories: [] },
       { status: 500 }

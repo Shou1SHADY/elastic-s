@@ -22,6 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth overflow-x-hidden" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://logewufqgmgxufkovpuw.supabase.co" crossOrigin="" />
+        <link rel="preconnect" href="https://slelguoygbfzlpylpxfs.supabase.co" crossOrigin="" />
+      </head>
       <body
         className={`${inter.variable} font-sans antialiased bg-stone-50 text-slate-800 selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden w-full`}
         suppressHydrationWarning

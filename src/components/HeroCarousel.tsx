@@ -177,24 +177,42 @@ export function HeroCarousel() {
         isRtl ? "left-10 sm:left-12" : "right-10 sm:right-12"
       )}>
         {slides.map((_, index) => (
-          <button
+          <Indicator
             key={index}
+            index={index}
+            current={current}
+            progress={progress}
+            isRtl={isRtl}
             onClick={() => goToSlide(index)}
-            className="w-8 md:w-12 h-1 bg-white/40 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/60"
-          >
-            <div
-              className={cn(
-                "h-full bg-white rounded-full",
-                isRtl ? "origin-right" : "origin-left"
-              )}
-              style={{
-                width: current === index ? `${progress}%` : current > index ? "100%" : "0%",
-                transition: current === index ? "width 50ms linear" : "none",
-              }}
-            />
-          </button>
+          />
         ))}
       </div>
     </header>
+  );
+}
+
+function Indicator({ index, current, progress, isRtl, onClick }: {
+  index: number;
+  current: number;
+  progress: number;
+  isRtl: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-8 md:w-12 h-1 bg-white/40 rounded-full overflow-hidden transition-all duration-300 hover:bg-white/60"
+    >
+      <div
+        className={cn(
+          "h-full bg-white rounded-full",
+          isRtl ? "origin-right" : "origin-left"
+        )}
+        style={{
+          width: current === index ? `${progress}%` : current > index ? "100%" : "0%",
+          transition: current === index ? "width 50ms linear" : "none",
+        }}
+      />
+    </button>
   );
 }

@@ -21,13 +21,20 @@ interface Category {
   label: string;
 }
 
+interface ProductCatalogProps {
+  initialData?: {
+    products: Product[];
+    categories: Category[];
+  };
+}
+
 const fallbackImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop";
 
-function ProductCatalogContent() {
+function ProductCatalogContent({ initialData }: ProductCatalogProps) {
   const [activeCategory, setActiveCategory] = useState("all");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(initialData?.products || []);
+  const [categories, setCategories] = useState<Category[]>(initialData?.categories ? [{ id: "all", label: "All Products" }, ...initialData.categories] : []);
+  const [loading, setLoading] = useState(!initialData);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
@@ -35,6 +42,13 @@ function ProductCatalogContent() {
   const { t, isRtl } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // Update categories labels when translation changes
+  useEffect(() => {
+    if (categories.length > 0) {
+      setCategories(prev => prev.map(c => c.id === "all" ? { ...c, label: t("allProducts") } : c));
+    }
+  }, [t]);
 
   // Scroll indicators state
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -91,6 +105,8 @@ function ProductCatalogContent() {
   }, [activeCategory]);
 
   useEffect(() => {
+    if (initialData) return; // Skip if we have initial data
+
     async function fetchProducts() {
       try {
         const res = await fetch("/api/products");
@@ -104,7 +120,7 @@ function ProductCatalogContent() {
       }
     }
     fetchProducts();
-  }, [t]);
+  }, [t, initialData]);
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === "all") return products;
@@ -333,10 +349,10 @@ function ProductCatalogContent() {
   );
 }
 
-export function ProductCatalog() {
+export function ProductCatalog({ initialData }: ProductCatalogProps) {
   return (
     <Suspense fallback={<div className="min-h-screen animate-pulse bg-stone-50" />}>
-      <ProductCatalogContent />
+      <ProductCatalogContent initialData={initialData} />
     </Suspense>
   );
 }

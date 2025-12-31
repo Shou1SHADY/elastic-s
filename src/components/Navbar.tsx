@@ -44,57 +44,21 @@ export const Navbar: FC = () => {
     }
   }, [scrollDirection]);
 
-    useEffect(() => {
-      const tl = gsap.timeline();
-  
-      if (isShrunken) {
-        tl.to(headerRef.current, {
-          width: 56,
-          height: 56,
-          borderRadius: "1rem",
-          duration: 0.4,
-          ease: "power3.inOut",
-        })
-          .to(
-            [navRef.current, langRef.current, logoRef.current],
-            { opacity: 0, duration: 0.2, ease: "power3.inOut" },
-            "-=0.4"
-          )
-          .to(
-            iconRef.current,
-            { opacity: 1, duration: 0.2, ease: "power3.inOut" },
-            "-=0.2"
-          );
-      } else {
-        tl.to(headerRef.current, {
-          width: "auto",
-          height: 80,
-          borderRadius: "9999px",
-          duration: 0.4,
-          ease: "power3.inOut",
-        })
-          .to(
-            iconRef.current,
-            { opacity: 0, duration: 0.2, ease: "power3.inOut" },
-            "-=0.4"
-          )
-          .to(
-            [navRef.current, langRef.current, logoRef.current],
-            { opacity: 1, duration: 0.3, ease: "power3.inOut" },
-            "-=0.3"
-          );
-      }
-    }, [isShrunken]);
+  // We use CSS transitions and data attributes for the shrink effect
+  // to avoid JS-driven layout shifts and GSAP reflow costs.
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (rotatingIconRef.current) {
-        const rotation = window.scrollY / 5;
-        gsap.to(rotatingIconRef.current, {
-          rotation: rotation,
-          duration: 0.1,
-          ease: "power1.out",
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (rotatingIconRef.current) {
+            const rotation = window.scrollY / 5;
+            gsap.set(rotatingIconRef.current, { rotation });
+          }
+          ticking = false;
         });
+        ticking = true;
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -120,26 +84,42 @@ export const Navbar: FC = () => {
       >
         <div
           ref={headerRef}
-          className="flex h-20 items-center justify-center border border-stone-200/50 bg-white/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden"
+          data-shrunken={isShrunken}
+          className={cn(
+            "flex items-center justify-center border border-stone-200/50 bg-white/30 px-4 shadow-lg backdrop-blur-lg md:px-6 overflow-hidden transition-all duration-500 ease-in-out",
+            "h-20 sm:h-20 data-[shrunken=true]:h-14 data-[shrunken=true]:w-14 data-[shrunken=true]:rounded-2xl data-[shrunken=true]:p-0",
+            "data-[shrunken=false]:h-20 data-[shrunken=false]:w-full data-[shrunken=false]:sm:w-auto data-[shrunken=false]:rounded-full"
+          )}
         >
-          <div ref={iconRef} className="absolute opacity-0 text-slate-900">
+          <div
+            ref={iconRef}
+            className={cn(
+              "absolute text-slate-900 transition-opacity duration-300",
+              isShrunken ? "opacity-100" : "opacity-0 pointer-events-none"
+            )}
+          >
             <div ref={rotatingIconRef}>
               <Loader />
             </div>
           </div>
-            <Link
-              href="/"
-              className={cn("flex-shrink-0 transition-all", isRtl ? "ml-4 sm:ml-6" : "mr-4 sm:mr-6")}
-            >
-              <div ref={logoRef} className="scale-110 sm:scale-125">
-                <Logo />
-              </div>
-            </Link>
+          <Link
+            href="/"
+            className={cn(
+              "flex-shrink-0 transition-all duration-300",
+              isRtl ? "ml-4 sm:ml-6" : "mr-4 sm:mr-6",
+              isShrunken ? "opacity-0 pointer-events-none scale-50" : "opacity-100 scale-110 sm:scale-125"
+            )}
+          >
+            <div ref={logoRef}>
+              <Logo />
+            </div>
+          </Link>
           <nav
             ref={navRef}
             className={cn(
-              "hidden md:flex items-center",
-              isRtl ? "space-x-reverse space-x-6" : "space-x-6"
+              "hidden md:flex items-center transition-all duration-300",
+              isRtl ? "space-x-reverse space-x-6" : "space-x-6",
+              isShrunken ? "opacity-0 pointer-events-none translate-y-2" : "opacity-100 translate-y-0"
             )}
           >
             {navLinks.map((link) => (
@@ -157,8 +137,9 @@ export const Navbar: FC = () => {
           <div
             ref={langRef}
             className={cn(
-              "hidden md:flex items-center",
-              isRtl ? "mr-4" : "ml-4"
+              "hidden md:flex items-center transition-all duration-300 delay-75",
+              isRtl ? "mr-4" : "ml-4",
+              isShrunken ? "opacity-0 pointer-events-none" : "opacity-100"
             )}
           >
             <DropdownMenu>
@@ -179,48 +160,48 @@ export const Navbar: FC = () => {
             </DropdownMenu>
           </div>
 
-            <div
-              className={cn(
-                "md:hidden transition-opacity duration-300",
-                isRtl ? "mr-auto" : "ml-auto",
-                mobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
-              )}
-            >
-              <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
-                <Menu />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </div>
-          </div>
-        </header>
-  
-        {/* Mobile Menu Overlay */}
-        <div
-          className={cn(
-            "fixed inset-0 z-[60] bg-white/95 backdrop-blur-xl md:hidden transition-all duration-500 ease-in-out",
-            mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
-          )}
-          dir={isRtl ? "rtl" : "ltr"}
-        >
-          <div className={cn("absolute top-6", isRtl ? "left-6" : "right-6")}>
-            <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="scale-125">
-              <X />
-              <span className="sr-only">Close menu</span>
+          <div
+            className={cn(
+              "md:hidden transition-opacity duration-300",
+              isRtl ? "mr-auto" : "ml-auto",
+              mobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+            )}
+          >
+            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+              <Menu />
+              <span className="sr-only">Toggle menu</span>
             </Button>
           </div>
-          <div className="container mx-auto px-6 flex flex-col items-center justify-center h-full">
-            <nav className="flex flex-col items-center space-y-10">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                    className="text-2xl sm:text-3xl font-bold text-slate-900 hover:text-orange-600 transition-colors italic uppercase tracking-tighter"
-                  >
-                    {t(link.labelKey)}
-                  </Link>
-              ))}
-            </nav>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[60] bg-white/95 backdrop-blur-xl md:hidden transition-all duration-500 ease-in-out",
+          mobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
+        )}
+        dir={isRtl ? "rtl" : "ltr"}
+      >
+        <div className={cn("absolute top-6", isRtl ? "left-6" : "right-6")}>
+          <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="scale-125">
+            <X />
+            <span className="sr-only">Close menu</span>
+          </Button>
+        </div>
+        <div className="container mx-auto px-6 flex flex-col items-center justify-center h-full">
+          <nav className="flex flex-col items-center space-y-10">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-2xl sm:text-3xl font-bold text-slate-900 hover:text-orange-600 transition-colors italic uppercase tracking-tighter"
+              >
+                {t(link.labelKey)}
+              </Link>
+            ))}
+          </nav>
           <div className="mt-8 flex gap-4">
             <Button
               variant={language === "en" ? "secondary" : "ghost"}
