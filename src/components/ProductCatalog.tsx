@@ -209,6 +209,8 @@ function ProductCatalogContent() {
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     onError={() => handleImageError(product.id)}
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    loading={currentPage === 1 && products.indexOf(product) < 4 ? "eager" : "lazy"}
+                    priority={currentPage === 1 && products.indexOf(product) < 4}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className={cn(

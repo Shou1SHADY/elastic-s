@@ -104,8 +104,19 @@ export function HeroCarousel() {
                 fill
                 className="object-cover"
                 priority
+                quality={90}
                 onError={() => handleImageError(current)}
               />
+              {/* Preload next image */}
+              <div className="hidden">
+                <Image
+                  src={getImageSrc((current + 1) % slides.length)}
+                  alt="preload"
+                  width={1}
+                  height={1}
+                  priority
+                />
+              </div>
             </motion.div>
             <div className="absolute inset-0 bg-slate-900/40 bg-gradient-to-t from-slate-900/95 via-slate-900/20 to-transparent"></div>
           </div>
