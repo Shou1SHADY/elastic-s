@@ -46,7 +46,10 @@ function ProductCatalogContent({ initialData }: ProductCatalogProps) {
   // Update categories labels when translation changes
   useEffect(() => {
     if (categories.length > 0) {
-      setCategories(prev => prev.map(c => c.id === "all" ? { ...c, label: t("allProducts") } : c));
+      setCategories(prev => prev.map(c => ({
+        ...c,
+        label: t(c.id) // Use t(id) to get translated label
+      })));
     }
   }, [t]);
 

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const SLIDE_DURATION = 8000;
+const SLIDE_DURATION = 4000;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const BUCKET_URL = `${SUPABASE_URL}/storage/v1/object/public/corporate`;
 
