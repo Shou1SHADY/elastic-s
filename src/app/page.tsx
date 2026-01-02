@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { HeroCarousel } from "@/components/HeroCarousel";
-import { getServerSideProducts } from "@/lib/products";
+import { getServerSideProducts, getServerSideCarousel } from "@/lib/products";
 
 const ProductCatalog = dynamic(() => import("@/components/ProductCatalog").then(mod => mod.ProductCatalog), {
   loading: () => <div className="min-h-screen animate-pulse bg-stone-50" />
@@ -10,12 +10,15 @@ const Features = dynamic(() => import("@/components/Features").then(mod => mod.F
 const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer));
 
 export default async function Home() {
-  const initialData = await getServerSideProducts();
+  const [initialData, initialCarousel] = await Promise.all([
+    getServerSideProducts(),
+    getServerSideCarousel()
+  ]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
-      <HeroCarousel />
+      <HeroCarousel initialSlides={initialCarousel} />
       <ProductCatalog initialData={initialData} />
       <Features />
       <Footer />

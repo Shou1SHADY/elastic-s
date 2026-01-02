@@ -17,7 +17,8 @@ import {
     Search,
     ExternalLink,
     Menu,
-    X as CloseIcon
+    X as CloseIcon,
+    Layout
 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -25,6 +26,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { checkAuth, logout } from "@/app/actions/auth";
 import { StatsCard } from "./components/StatsCard";
 import { CategoryManager } from "./components/CategoryManager";
+import { CarouselManager } from "./components/CarouselManager";
 import { cn } from "@/lib/utils";
 
 interface Product {
@@ -47,7 +49,7 @@ export default function AdminDashboard() {
     const [uploading, setUploading] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState("");
-    const [view, setView] = useState<"products" | "categories">("products");
+    const [view, setView] = useState<"products" | "categories" | "carousel">("products");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const router = useRouter();
 
@@ -188,6 +190,7 @@ export default function AdminDashboard() {
                             {[
                                 { id: "products", label: "Products", icon: Package },
                                 { id: "categories", label: "Categories", icon: Settings },
+                                { id: "carousel", label: "Carousel", icon: Layout },
                             ].map((item) => (
                                 <Button
                                     key={item.id}
@@ -262,10 +265,10 @@ export default function AdminDashboard() {
                     <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                         <div>
                             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                                {view === "products" ? "Product Inventory" : "System Categories"}
+                                {view === "products" ? "Product Inventory" : view === "categories" ? "System Categories" : "Hero Carousel"}
                             </h1>
                             <p className="text-zinc-500 mt-2 text-base sm:text-lg">
-                                {view === "products" ? "Update images and manage inventory." : "Organize your catalog by grouping products."}
+                                {view === "products" ? "Update images and manage inventory." : view === "categories" ? "Organize your catalog by grouping products." : "Manage the images and text for the homepage slider."}
                             </p>
                         </div>
 
@@ -291,7 +294,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <AnimatePresence mode="wait">
-                        {view === "products" ? (
+                        {view === "products" && (
                             <motion.div
                                 key="products-view"
                                 initial={{ opacity: 0, x: -20 }}
@@ -394,7 +397,8 @@ export default function AdminDashboard() {
                                     </div>
                                 </Tabs>
                             </motion.div>
-                        ) : (
+                        )}
+                        {view === "categories" && (
                             <motion.div
                                 key="categories-view"
                                 initial={{ opacity: 0, x: 20 }}
@@ -404,6 +408,16 @@ export default function AdminDashboard() {
                                 <div className="max-w-4xl">
                                     <CategoryManager categories={categories} onUpdate={fetchProducts} />
                                 </div>
+                            </motion.div>
+                        )}
+                        {view === "carousel" && (
+                            <motion.div
+                                key="carousel-view"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                            >
+                                <CarouselManager />
                             </motion.div>
                         )}
                     </AnimatePresence>

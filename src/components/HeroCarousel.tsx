@@ -17,32 +17,75 @@ const fallbackImages = [
   "https://images.unsplash.com/photo-1590523278191-995cbcda646b?q=80&w=2532&auto=format&fit=crop",
 ];
 
-export function HeroCarousel() {
+interface CarouselSlide {
+  id: string;
+  image: string;
+  tag_en: string;
+  tag_ar: string;
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
+  order: number;
+}
+
+export function HeroCarousel({ initialSlides = [] }: { initialSlides?: CarouselSlide[] }) {
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
-  const { t, isRtl } = useLanguage();
+  const [dynamicSlides, setDynamicSlides] = useState<CarouselSlide[]>(initialSlides);
+  const { t, isRtl, language } = useLanguage();
 
-  const slides = useMemo(() => [
+  const fallbackSlides = useMemo(() => [
     {
+      id: "fallback-1",
       tag: t("tacticalCollection"),
       title: t("tacticalTitle"),
       description: t("tacticalDesc"),
       image: `${BUCKET_URL}/army/ABU44231-2_tn.webp`,
     },
     {
+      id: "fallback-2",
       tag: t("brandMerch"),
       title: t("brandTitle"),
       description: t("brandDesc"),
       image: `${BUCKET_URL}/coasters/ABU42852-23_tn.webp`,
     },
     {
+      id: "fallback-3",
       tag: t("industrialParts"),
       title: t("industrialTitle"),
       description: t("industrialDesc"),
       image: `${BUCKET_URL}/police/ABU44238-9_tn.webp`,
     },
   ], [t]);
+
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const res = await fetch("/api/carousel");
+        const data = await res.json();
+        if (data.slides && data.slides.length > 0) {
+          setDynamicSlides(data.slides.sort((a: any, b: any) => a.order - b.order));
+        }
+      } catch (error) {
+        console.error("Failed to fetch carousel slides", error);
+      }
+    };
+    fetchSlides();
+  }, []);
+
+  const slides = useMemo(() => {
+    if (dynamicSlides.length > 0) {
+      return dynamicSlides.map(s => ({
+        tag: language === "ar" ? s.tag_ar : s.tag_en,
+        title: language === "ar" ? s.title_ar : s.title_en,
+        description: language === "ar" ? s.description_ar : s.description_en,
+        image: s.image
+      }));
+    }
+    return fallbackSlides;
+  }, [dynamicSlides, fallbackSlides, language]);
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
@@ -76,7 +119,7 @@ export function HeroCarousel() {
 
   const getImageSrc = (index: number) => {
     if (imageErrors.has(index)) {
-      return fallbackImages[index];
+      return fallbackImages[index % fallbackImages.length];
     }
     return slides[index].image;
   };

@@ -86,3 +86,20 @@ export async function getServerSideProducts() {
         return { products: [], categories: INITIAL_CATEGORIES };
     }
 }
+const CAROUSEL_METADATA_PATH = "_metadata/carousel.json";
+
+export async function getServerSideCarousel() {
+    if (!SUPABASE_URL) return [];
+
+    try {
+        const { data, error } = await supabase.storage.from(BUCKET_NAME).download(CAROUSEL_METADATA_PATH);
+        if (!error && data) {
+            const text = await data.text();
+            const slides = JSON.parse(text);
+            return slides.sort((a: any, b: any) => a.order - b.order);
+        }
+    } catch (e) {
+        console.error("Error fetching server-side carousel:", e);
+    }
+    return [];
+}
