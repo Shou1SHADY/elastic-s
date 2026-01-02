@@ -61,9 +61,10 @@ export function HeroCarousel({ initialSlides = [] }: { initialSlides?: CarouselS
   ], [t]);
 
   useEffect(() => {
+    // Only fetch if we don't have initial slides or if we want to ensure freshness on the client
     const fetchSlides = async () => {
       try {
-        const res = await fetch("/api/carousel");
+        const res = await fetch("/api/carousel", { cache: 'no-store' });
         const data = await res.json();
         if (data.slides && data.slides.length > 0) {
           setDynamicSlides(data.slides.sort((a: any, b: any) => a.order - b.order));

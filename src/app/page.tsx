@@ -9,6 +9,8 @@ const ProductCatalog = dynamic(() => import("@/components/ProductCatalog").then(
 const Features = dynamic(() => import("@/components/Features").then(mod => mod.Features));
 const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer));
 
+export const revalidate = 0;
+
 export default async function Home() {
   const [initialData, initialCarousel] = await Promise.all([
     getServerSideProducts(),

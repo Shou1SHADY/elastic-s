@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 const BUCKET_NAME = "corporate";
 const CAROUSEL_METADATA_PATH = "_metadata/carousel.json";
@@ -112,6 +113,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Failed to save carousel metadata" }, { status: 500 });
         }
 
+        revalidatePath("/");
         return NextResponse.json({ success, slide: newSlide });
     } catch (error) {
         console.error("Carousel POST error:", error);
@@ -156,6 +158,7 @@ export async function DELETE(req: Request) {
 
         const filtered = slides.filter(s => s.id !== id);
         const success = await saveCarouselData(filtered);
+        if (success) revalidatePath("/");
         return NextResponse.json({ success });
     } catch (error) {
         console.error("Carousel DELETE error:", error);
